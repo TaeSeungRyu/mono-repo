@@ -1,0 +1,8 @@
+{
+  "name": "app1",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "type": "module"
+}

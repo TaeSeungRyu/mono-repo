@@ -1,0 +1,14 @@
+{
+  "name": "my-mono-repo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "run1": "yarn workspace app1 start",
+    "run2": "yarn workspace app2 start"
+  },
+  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
+}
