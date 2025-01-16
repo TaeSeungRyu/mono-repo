@@ -14,3 +14,12 @@ export function parseDateSample(arg) {
   }
   return "";
 }
+
+import debounce from "debounce";
+export function debounceSample(arg) {
+  debounce(() => {
+    if (arg) {
+      arg();
+    }
+  }, 1000);
+}
