@@ -5,13 +5,14 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 import { UserModule } from 'src/user/user.module';
+import { SECRETORKEY } from 'my-common-props'; // ESM 방식으로 가져오기
 
 @Module({
   imports: [
     UserModule,
     PassportModule,
     JwtModule.register({
-      secret: 'jwt-key', // 실제 서비스에서는 환경변수 사용
+      secret: `${SECRETORKEY}`,
       signOptions: { expiresIn: '1h' },
     }),
   ],

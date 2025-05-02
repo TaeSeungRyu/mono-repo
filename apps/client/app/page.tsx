@@ -1,8 +1,8 @@
 import Link from "next/link";
 import SigninBtn from "./components/SigninBtn";
 import { HandleBtn } from "./components/HandleBtn";
-import { printer, parseDateSample, debounceSample } from "my-common-utils"; //이러한 방식으로 공통 모듈을 사용할 수 있음!!!
-
+import { printer, parseDateSample } from "my-common-utils"; //이러한 방식으로 공통 모듈을 사용할 수 있음!!!
+import { SECRETORKEY } from "my-common-props"; // ESM 방식으로 가져오기
 export default function Home() {
   printer("hello world");
   return (

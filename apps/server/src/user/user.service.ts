@@ -15,4 +15,14 @@ export class UserService {
     const users = await this.users.find();
     console.log('users', users);
   }
+
+  async findUserByIdPassword(username: string, password: string) {
+    const user = await this.users.findOne({
+      where: {
+        username,
+        password,
+      },
+    });
+    return user;
+  }
 }

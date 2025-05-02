@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-
+import { SECRETORKEY } from 'my-common-props'; // ESM 방식으로 가져오기
 interface JwtPayload {
   username: string;
 }
@@ -12,8 +12,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: 'jwt-key',
+      secretOrKey: `${SECRETORKEY}`,
     });
+    console.log('test', `${SECRETORKEY}`);
   }
 
   validate(payload: JwtPayload) {

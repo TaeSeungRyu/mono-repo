@@ -2,5 +2,5 @@
   "name": "my-common-props",
   "main": "index.js",
   "version": "1.0.0",
-  "type": "module"
+  "type": "commonjs"
 }

@@ -11,14 +11,36 @@ export class AuthService {
   ) {}
 
   async validateUser(username: string, password: string): Promise<ResponseDto> {
-    const token = this.jwtService.sign({ username });
-    console.log(password); //userservice에서 password를 확인하는 로직이 필요합니다.
+    const user = await this.userService.findUserByIdPassword(
+      username,
+      password,
+    );
+    if (!user) {
+      return new Promise((resolve) => {
+        resolve(
+          new ResponseDto(
+            {
+              access_token: '',
+              refresh_token: '',
+              success: false,
+            },
+            'invalid_credentials',
+            '아이디 또는 비밀번호가 틀립니다.',
+          ),
+        );
+      });
+    }
+    const access_token = this.jwtService.sign({ username });
+    const refresh_token = this.jwtService.sign(
+      { username },
+      { expiresIn: '1d' },
+    );
     return new Promise((resolve) => {
       resolve({
         result: {
           success: true,
-          access_token: token,
-          refresh_token: token,
+          access_token,
+          refresh_token,
         },
         error: '',
         message: 'Login successful',
