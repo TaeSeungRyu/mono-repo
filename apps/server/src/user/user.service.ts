@@ -4,12 +4,14 @@ import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { Request } from 'express';
 import { ResponseDto } from 'src/common/common.dto';
+import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private users: Repository<User>,
+    private readonly redisService: RedisService,
   ) {}
 
   /**
@@ -25,8 +27,26 @@ export class UserService {
         username,
         password,
       },
+      select: {
+        username: true,
+        name: true,
+        lastlogin: true,
+        id: true,
+      },
     });
     return user;
+  }
+
+  private stringToJson(arg: string | null): unknown {
+    if (!arg) {
+      return null; // 또는 적절한 기본값을 반환
+    }
+    try {
+      return JSON.parse(arg);
+    } catch (error) {
+      console.error('JSON parsing error:', error);
+      return null; // 또는 적절한 기본값을 반환
+    }
   }
 
   /**
@@ -38,19 +58,26 @@ export class UserService {
   async findUserById(req: Request): Promise<ResponseDto> {
     if (req?.user && req?.user?.username) {
       const username = req?.user?.username;
-      const user = await this.users.findOne({
-        where: {
-          username,
-        },
-        select: {
-          username: true,
-          name: true,
-          lastlogin: true,
-          id: true,
-        },
-      });
+      const user = await this.redisService.get(`${username}_info`);
+
+      if (!user) {
+        const userInfo = await this.users.findOne({
+          where: {
+            username,
+          },
+        });
+        if (userInfo) {
+          await this.redisService.set(
+            `${username}_info`,
+            JSON.stringify(userInfo),
+            60 * 60 * 24,
+          );
+        }
+      }
+
+      const data = this.stringToJson(user);
       return new ResponseDto(
-        { success: true, data: user },
+        { success: true, data: data },
         'success',
         '사용자 정보 조회 성공',
       );
@@ -88,6 +115,13 @@ export class UserService {
       );
       delete updateData['username'];
       await this.users.update(id, updateData);
+      await this.redisService.set(
+        `${user.username}_info`,
+        JSON.stringify({
+          ...user,
+          ...updateData,
+        }),
+      );
       return new ResponseDto(
         { success: true },
         'success',

@@ -4,12 +4,15 @@ import { Request, Response } from 'express';
 import { ResponseDto } from 'src/common/common.dto';
 import { UserService } from 'src/user/user.service';
 import { JWTCode, JwtPayload } from './jwt-payload.interface';
+import { RedisService } from 'src/redis/redis.service';
+import { User } from 'src/user/user.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
     private userService: UserService,
+    private redisService: RedisService,
   ) {}
 
   /**
@@ -49,11 +52,9 @@ export class AuthService {
       { username },
       { expiresIn: '1d' },
     );
-    res.cookie(JWTCode.refresh_token, refresh_token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-    });
+
+    this.setCookieAndRedisCache(res, user, refresh_token);
+
     return new Promise((resolve) => {
       resolve(
         new ResponseDto(
@@ -71,6 +72,43 @@ export class AuthService {
 
   /**
    *
+   * @param res 응답 객체(쿠키 설정)
+   * @param username 사용자 아이디
+   * @param refresh_token refresh_token
+   * @description 쿠키에 refresh_token을 설정하고 Redis에 캐시합니다.
+   */
+  private setCookieAndRedisCache(
+    res: Response,
+    user: User,
+    refresh_token: string,
+  ): void {
+    res.cookie(JWTCode.refresh_token, refresh_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+    });
+    this.redisService
+      .exists(user.username)
+      .then(async (exists) => {
+        if (exists) {
+          await this.redisService.del(user.username);
+          await this.redisService.del(`${user.username}_info`);
+        }
+        await this.redisService.set(user.username, refresh_token, 60 * 60 * 1); // 1시간
+        await this.redisService.set(
+          `${user.username}_info`,
+          JSON.stringify(user),
+          60 * 60 * 24,
+        ); // 24시간
+      })
+      .catch((error) => {
+        console.error('Redis error:', error);
+        // Redis 오류 처리 로직 추가 (예: 로그 기록, 알림 등)
+      });
+  }
+
+  /**
+   *
    * @param req 요청 객체
    * @param res 응답 객체
    * @description 로그아웃 시 쿠키를 삭제합니다.
@@ -82,6 +120,10 @@ export class AuthService {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
     });
+    if (req.user) {
+      await this.redisService.del(req.user?.username);
+      await this.redisService.del(`${req.user?.username}_info`);
+    }
     return new Promise((resolve) => {
       resolve(
         new ResponseDto(
@@ -103,6 +145,7 @@ export class AuthService {
    */
   async refreshToken(req: Request): Promise<ResponseDto> {
     const refresh_token = req.cookies[JWTCode.refresh_token] as string;
+    //여기서 사용자 아이디와 리프레시토큰을 비교하는 구간 레디스
     if (!refresh_token) {
       return new Promise((resolve) => {
         resolve(

@@ -6,6 +6,7 @@ import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 import { UserModule } from 'src/user/user.module';
 import { SECRETORKEY } from 'my-common-props'; // ESM 방식으로 가져오기
+import { RedisService } from 'src/redis/redis.service';
 
 @Module({
   imports: [
@@ -17,6 +18,6 @@ import { SECRETORKEY } from 'my-common-props'; // ESM 방식으로 가져오기
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, RedisService],
 })
 export class AuthModule {}
