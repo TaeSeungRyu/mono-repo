@@ -47,20 +47,20 @@ export class AuthService {
         );
       });
     }
-    const access_token = this.jwtService.sign({ username });
-    const refresh_token = this.jwtService.sign(
+    const accessToken = this.jwtService.sign({ username });
+    const refreshToken = this.jwtService.sign(
       { username },
       { expiresIn: '1d' },
     );
 
-    this.setCookieAndRedisCache(res, user, refresh_token);
+    this.setCookieAndRedisCache(res, user, refreshToken);
 
     return new Promise((resolve) => {
       resolve(
         new ResponseDto(
           {
-            access_token,
-            refresh_token,
+            access_token: accessToken,
+            refresh_token: refreshToken,
             success: true,
           },
           '',
@@ -82,7 +82,7 @@ export class AuthService {
     user: User,
     refresh_token: string,
   ): void {
-    res.cookie(JWTCode.refresh_token, refresh_token, {
+    res.cookie(JWTCode.refreshToken, refresh_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
@@ -115,7 +115,7 @@ export class AuthService {
    * @returns 로그아웃 성공시 success: true를 포함한 ResponseDto를 반환합니다.
    */
   async logout(req: Request, res: Response): Promise<ResponseDto> {
-    res.clearCookie(JWTCode.refresh_token, {
+    res.clearCookie(JWTCode.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
@@ -144,9 +144,25 @@ export class AuthService {
    * @returns refresh_token이 유효하지 않을 경우 success: false를 포함한 ResponseDto를 반환합니다.
    */
   async refreshToken(req: Request): Promise<ResponseDto> {
-    const refresh_token = req.cookies[JWTCode.refresh_token] as string;
-    //여기서 사용자 아이디와 리프레시토큰을 비교하는 구간 레디스
-    if (!refresh_token) {
+    if (!req.user) {
+      return new Promise((resolve) => {
+        resolve(
+          new ResponseDto(
+            {
+              access_token: '',
+              refresh_token: '',
+              success: false,
+            },
+            'invalid_user',
+            '사용자 정보가 없습니다.',
+          ),
+        );
+      });
+    }
+    const refreshToken = req.cookies[JWTCode.refreshToken] as string;
+    const savedRefreshToken = await this.redisService.get(req.user?.username);
+
+    if (!refreshToken || refreshToken !== savedRefreshToken) {
       return new Promise((resolve) => {
         resolve(
           new ResponseDto(
@@ -162,14 +178,14 @@ export class AuthService {
       });
     }
     try {
-      const payload: JwtPayload = this.jwtService.decode(refresh_token);
-      const access_token = this.jwtService.sign({ username: payload.username });
+      const payload: JwtPayload = this.jwtService.decode(refreshToken);
+      const accessToken = this.jwtService.sign({ username: payload.username });
       return new Promise((resolve) => {
         resolve(
           new ResponseDto(
             {
-              access_token,
-              refresh_token,
+              access_token: accessToken,
+              refresh_token: refreshToken,
               success: true,
             },
             '',
