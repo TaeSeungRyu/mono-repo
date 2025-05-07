@@ -13,6 +13,7 @@ export class AuthController {
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<ResponseDto> {
+    console.log('loginDto', loginDto);
     return await this.authService.validateUser(
       loginDto.username,
       loginDto.password,

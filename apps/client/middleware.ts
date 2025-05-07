@@ -16,7 +16,8 @@ const _addAuthHeader = async (request: NextRequest, headers: Headers) => {
       token: tokens,
       secret: process.env.NEXTAUTH_SECRET || "",
     });
-    headers.set("Authorization", `Bearer ${savedValue?.accessToken}`); //여기에 Auth같은 헤더 추가를 하면 됩니다.
+    //console.log("savedValue savedValue savedValue", savedValue);
+    headers.set("Authorization", `Bearer ${savedValue?.serverAccessToken}`); //여기에 Auth같은 헤더 추가를 하면 됩니다.
   } catch (e) {
     console.log(e);
   }

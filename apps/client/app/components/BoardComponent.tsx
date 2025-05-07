@@ -24,17 +24,17 @@ const BoardComponent = () => {
   });
 
   useEffect(() => {
-    if (loginData.username) {
-      setMe(loginData);
+    if (loginData.data.username) {
+      setMe(loginData.data);
     }
     setCashedList(data);
-    console.log("data", data);
-  }, [loginData, data]);
+    console.log("loginData", loginData);
+  }, [loginData.data, data]);
 
   const goTestPage = () => {
     router.push("/test");
   };
-
+  console.log(me);
   return (
     <>
       <div>기본 내 정보 : {me.username}</div>

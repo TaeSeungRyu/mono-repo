@@ -4,12 +4,10 @@ import { JWT } from "next-auth/jwt";
 
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
-
   session: {
     strategy: "jwt",
   },
   useSecureCookies: process.env.NODE_ENV === "production", //https://next-auth.js.org/warnings#use_secure_cookies 이슈 해결을 위한 설정
-
   debug: process.env.NODE_ENV !== "production", //https://next-auth.js.org/warnings#debug_enabled 이슈 해결을 위한 설정
   cookies: {
     sessionToken: {
@@ -27,13 +25,19 @@ const handler = NextAuth({
     async jwt({ token, user, session }): Promise<JWT> {
       if (user) {
         token.username = user.username; //사용자 정의 필드 추가
+        token.serverAccessToken = user.serverAccessToken; //사용자 정의 필드 추가
+        token.serverRefreshToken = user.serverRefreshToken; //사용자 정의 필드 추가
       }
+      //console.log("token", token);
       return token;
     },
     async session({ session, token }) {
       if (token) {
         session.user.username = token.username; //사용자 정의 필드 추가
+        session.user.serverAccessToken = token.serverAccessToken; //사용자 정의 필드 추가
+        session.user.serverRefreshToken = token.serverRefreshToken; //사용자 정의 필드 추가
       }
+      //  console.log("session", session);
       return session;
     },
   },

@@ -18,17 +18,46 @@ export const authOptions = {
       },
       //요청 샘플 입니다.
       async authorize(credentials) {
-        const prepare = SqlLiteDB.prepare(
-          "SELECT * FROM User WHERE password = $password AND username = $username"
+        //http://127.0.0.1:8080
+        const requestResult = await fetch(
+          `${process.env.API_SERVER_URL}/auth/login`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username: credentials.username,
+              password: credentials.password,
+            }),
+          },
         );
 
-        const user = prepare.get({
-          username: credentials.username,
-          password: credentials.password,
-        });
-        console.log("login from db : ", user);
-        if (user) {
-          return user;
+        // const user = prepare.get({
+        //   username: credentials.username,
+        //   password: credentials.password,
+        // });
+        const user = await requestResult?.json();
+
+        if (user?.result?.success) {
+          const getMe = await fetch(
+            `${process.env.API_SERVER_URL}/user/my-info`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${user.result.access_token}`,
+              },
+            },
+          );
+          const me = await getMe?.json();
+          return {
+            serverAccessToken: user.result.access_token,
+            serverRefreshToken: user.result.refresh_token,
+            id: me.result.data.id,
+            username: me.result.data.username,
+            name: me.result.data.name,
+          };
         }
         throw new Error("Invalid username or password");
       },

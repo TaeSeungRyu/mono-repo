@@ -17,7 +17,7 @@ export class UserRepositoryImpl implements UserRepository {
   async insertUser(
     username: string,
     password: string,
-    name: string | null
+    name: string | null,
   ): Promise<any> {
     const insertResult = await fetch("/api/user/signup", {
       method: "POST",
@@ -36,16 +36,18 @@ export class UserRepositoryImpl implements UserRepository {
     });
   }
   async findMe() {
-    const meResult = await fetch(`/api/user/me`, {
+    const meResult = await fetch(`/api-server/user/my-info`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     });
     return new Promise(async (resolve, reject) => {
+      console.log("meResult meResult", meResult);
       if (meResult.ok) {
-        const { data } = await meResult.json();
-        resolve(new CommonResponse({ data, sucess: true }));
+        console.log("meResult meResult", meResult);
+        const { result } = await meResult.json();
+        resolve(new CommonResponse({ data: result.data, sucess: true }));
       } else {
         reject(new Error("DB Insert Error"));
       }
