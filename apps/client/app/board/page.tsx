@@ -1,25 +1,16 @@
-import Link from "next/link";
-import ZustandText from "../components/ZustandText";
-import Test from "../components/Test";
+import BoardComponent from "../components/BoardComponent";
+import BoardCRUDComponent from "../components/BoardCRUDComponent";
+import LoginContextProvider from "../components/LoginContextProvider";
 
-export default function Board() {
+//[use case] Presentation Layer
+export default async function BoardPage() {
   return (
     <div className="grid items-center justify-items-center">
-      <div>im borad</div>
-      <Test></Test>
-      <div>
-        <ZustandText></ZustandText>
-      </div>
-      <div>
-        <Link
-          href={{
-            pathname: "/",
-            query: { page: "1" },
-          }}
-        >
-          go first page
-        </Link>
-      </div>
+      <div>board(수정하는 경우 20% 확률로 일부러 틀림!)</div>
+      <LoginContextProvider>
+        <BoardComponent></BoardComponent>
+        <BoardCRUDComponent></BoardCRUDComponent>
+      </LoginContextProvider>
     </div>
   );
 }

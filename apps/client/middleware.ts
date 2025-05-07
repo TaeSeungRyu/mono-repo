@@ -26,7 +26,7 @@ export async function middleware(request: NextRequest) {
   //이 곳에서 저장된 키 값을 헤더에 넣어서 API 서버로 전달
   const requestPath = request.nextUrl.pathname;
   const requestHeaders = new Headers(request.headers);
-  console.log("requestPath", requestPath);
+  //console.log("requestPath", requestPath);
 
   if (requestPath.includes("api-server")) {
     await _addAuthHeader(request, requestHeaders);

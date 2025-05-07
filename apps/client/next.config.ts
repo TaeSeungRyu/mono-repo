@@ -8,9 +8,10 @@ const nextConfig: NextConfig = {
     TEST_ID: process.env.TEST_ID,
     TEST_PASSWORD: process.env.TEST_PASSWORD,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL, // https://next-auth.js.org/warnings#nextauth_url 이슈 반영 url 추가
+    FRONT_SERVER_URL: process.env.FRONT_SERVER_URL,
   },
   compress: true,
-  reactStrictMode: true,
   images: {
     remotePatterns: [
       {

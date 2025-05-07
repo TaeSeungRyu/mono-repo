@@ -1,12 +1,17 @@
-export default function RootLayout({
+import { authOptions } from "@/app/utils/authOptions";
+import { getServerSession } from "next-auth/next";
+import { redirect } from "next/navigation";
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <div>
-      <div>{children}</div>
-      <div>layout - b</div>
-    </div>
-  );
+  //로그인 여부 확인
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    console.log(session);
+    redirect("/error");
+  }
+  return <>{children}</>;
 }

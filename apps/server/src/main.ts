@@ -7,7 +7,7 @@ async function bootstrap(): Promise<void> {
     const parser = cookieParser();
     app.use(parser);
   }
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 8080);
 }
 bootstrap().catch((err) => {
   console.error('Error starting server:', err);
