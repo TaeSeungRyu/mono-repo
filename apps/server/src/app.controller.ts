@@ -1,6 +1,7 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AuthGuard } from '@nestjs/passport';
+import { Request } from 'express';
 
 @Controller()
 export class AppController {
@@ -13,7 +14,8 @@ export class AppController {
 
   @Get('auth-health')
   @UseGuards(AuthGuard('jwt'))
-  getAuthHealth(): string {
+  getAuthHealth(@Req() req: Request): string {
+    console.log(req.cookies['refresh_token']); // ✅ 특정 쿠키
     return 'Auth service is healthy!';
   }
 }
