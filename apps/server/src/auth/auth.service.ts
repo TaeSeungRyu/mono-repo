@@ -36,15 +36,17 @@ export class AuthService {
       { expiresIn: '1d' },
     );
     return new Promise((resolve) => {
-      resolve({
-        result: {
-          success: true,
-          access_token,
-          refresh_token,
-        },
-        error: '',
-        message: 'Login successful',
-      });
+      resolve(
+        new ResponseDto(
+          {
+            access_token,
+            refresh_token,
+            success: true,
+          },
+          '',
+          'Login successful',
+        ),
+      );
     });
   }
 }

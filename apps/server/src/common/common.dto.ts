@@ -1,19 +1,40 @@
 export class ResponseDto {
   result?: {
     success: boolean;
-    access_token: string;
-    refresh_token: string;
+    access_token?: string;
+    refresh_token?: string;
+    data?: any;
   };
   error?: string;
   message?: string;
   constructor();
   constructor(
-    result: { success: boolean; access_token: string; refresh_token: string },
+    result: {
+      success: boolean;
+      access_token: string;
+      refresh_token: string;
+      data?: any;
+    },
     error: string,
     message: string,
   );
   constructor(
-    result?: { success: boolean; access_token: string; refresh_token: string },
+    result?: {
+      success: boolean;
+      access_token?: string;
+      refresh_token?: string;
+      data?: any;
+    },
+    error?: string,
+    message?: string,
+  );
+  constructor(
+    result?: {
+      success: boolean;
+      access_token?: string;
+      refresh_token?: string;
+      data?: any;
+    },
     error?: string,
     message?: string,
   ) {
