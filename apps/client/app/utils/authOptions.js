@@ -19,10 +19,7 @@ export const authOptions = {
       },
       //요청 샘플 입니다.
       async authorize(credentials) {
-        console.log(credentials);
         if (credentials.access_token) {
-          console.log("access_token access_token access_token in in in");
-          debugger;
           const getMe = await fetch(
             `${process.env.API_SERVER_URL}/user/my-info`,
             {
