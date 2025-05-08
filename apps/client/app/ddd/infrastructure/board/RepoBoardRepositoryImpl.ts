@@ -4,7 +4,7 @@ import { CommonResponse } from "../../domain/CommonResponse";
 
 export class RepoBoardRepositoryImpl implements BoardRepository {
   async selectAll(): Promise<CommonResponse> {
-    const meResult = await fetch(`/api/board`, {
+    const meResult = await fetch(`/api-server/board`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -12,15 +12,15 @@ export class RepoBoardRepositoryImpl implements BoardRepository {
     });
     return new Promise(async (resolve, reject) => {
       if (meResult.ok) {
-        const { data } = await meResult.json();
-        resolve(new CommonResponse({ data, sucess: true }));
+        const { result } = await meResult.json();
+        resolve(new CommonResponse({ data: result.data, sucess: true }));
       } else {
         reject(new Error("DB Insert Error"));
       }
     });
   }
-  async selectById(id: number): Promise<CommonResponse> {
-    const meResult = await fetch(`/api/board/${id}`, {
+  async selectById(id: string): Promise<CommonResponse> {
+    const meResult = await fetch(`/api-server/board/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -36,7 +36,7 @@ export class RepoBoardRepositoryImpl implements BoardRepository {
     });
   }
   async insert(board: Board): Promise<CommonResponse> {
-    const meResult = await fetch(`/api/board`, {
+    const meResult = await fetch(`/api-server/board/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -53,8 +53,8 @@ export class RepoBoardRepositoryImpl implements BoardRepository {
     });
   }
   async update(board: Board): Promise<CommonResponse> {
-    const meResult = await fetch(`/api/board`, {
-      method: "PUT",
+    const meResult = await fetch(`/api-server/board/update/${board.id}`, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
@@ -69,9 +69,9 @@ export class RepoBoardRepositoryImpl implements BoardRepository {
       }
     });
   }
-  async delete(id: number): Promise<CommonResponse> {
-    const meResult = await fetch(`/api/board?idx=${id}`, {
-      method: "DELETE",
+  async delete(id: string): Promise<CommonResponse> {
+    const meResult = await fetch(`/api-server/board/delete/${id}`, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },

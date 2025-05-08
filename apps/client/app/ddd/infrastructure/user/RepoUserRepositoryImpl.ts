@@ -43,9 +43,7 @@ export class UserRepositoryImpl implements UserRepository {
       },
     });
     return new Promise(async (resolve, reject) => {
-      console.log("meResult meResult", meResult);
       if (meResult.ok) {
-        console.log("meResult meResult", meResult);
         const { result } = await meResult.json();
         resolve(new CommonResponse({ data: result.data, sucess: true }));
       } else {

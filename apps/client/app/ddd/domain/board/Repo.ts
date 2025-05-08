@@ -1,18 +1,9 @@
-//[use case] Domain Layer
-export class CashedItem {
-  constructor(
-    public title: string,
-    public description: string,
-    public number: number
-  ) {}
-}
-
 export class Board {
   constructor(
-    public idx: number | null,
+    public id: string | null,
     public title: string,
-    public contents: string,
-    public username: string,
-    public reg_date: string
+    public content: string,
+    public userid: string,
+    public createdday: string,
   ) {}
 }

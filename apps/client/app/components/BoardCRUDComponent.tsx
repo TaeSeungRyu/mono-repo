@@ -14,7 +14,7 @@ const BoardCRUDComponent = () => {
   const queryClient = useQueryClient();
 
   const [title, setTitle] = useState("");
-  const [contents, setContents] = useState("");
+  const [content, setContent] = useState("");
 
   // ✅ 게시글 목록 불러오기 (useQuery 사용)
   const { data: boardList = [], refetch } = useQuery({
@@ -30,14 +30,14 @@ const BoardCRUDComponent = () => {
     mutationFn: async () => {
       await useBoardService.insertData({
         title,
-        contents,
+        content,
         username: loginData.username,
       });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [BoardQueryKey] });
       setTitle(""); // 입력 필드 초기화
-      setContents("");
+      setContent("");
     },
   });
 
@@ -50,7 +50,7 @@ const BoardCRUDComponent = () => {
       // 낙관적 업데이트: 데이터가 등록되기 전에 화면을 먼저 업데이트
       queryClient.setQueryData([BoardQueryKey], (oldData: any) => [
         ...oldData,
-        { title, contents, username: loginData.username, idx: Date.now() }, // 임시 데이터 추가
+        { title, content, username: loginData.username, idx: Date.now() }, // 임시 데이터 추가
       ]);
     },
     onError: (error, variables, context) => {
@@ -66,8 +66,8 @@ const BoardCRUDComponent = () => {
 
   // ✅ 삭제 (useMutation 사용)
   const deleteMutation = useMutation({
-    mutationFn: async (idx: number) => {
-      await useBoardService.deleteData(idx);
+    mutationFn: async (id: string) => {
+      await useBoardService.deleteData(id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [BoardQueryKey] });
@@ -77,10 +77,10 @@ const BoardCRUDComponent = () => {
   const changeBoardItem = (
     key: keyof Board,
     item: Board,
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     queryClient.setQueryData([BoardQueryKey], (prevList: Board[]) =>
-      useBoardService.changeBoardItem(key, prevList, item, e)
+      useBoardService.changeBoardItem(key, prevList, item, e),
     );
   };
 
@@ -98,8 +98,8 @@ const BoardCRUDComponent = () => {
           label="내용"
           type="textarea"
           placeholder="내용"
-          value={contents}
-          onChange={(e) => setContents(e.target.value)}
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
         />
         <button
           className="px-2 py-1 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700"
@@ -136,7 +136,7 @@ const BoardCRUDComponent = () => {
             {boardList.map((item: Board, index: number) => (
               <tr className="hover:bg-gray-100" key={index}>
                 <td className="px-4 py-1 border-b border-gray-300">
-                  {item.idx}
+                  {item.id}
                 </td>
                 <td className="px-4 py-1 border-b border-gray-300">
                   <InputField
@@ -150,12 +150,12 @@ const BoardCRUDComponent = () => {
                   <InputField
                     label="내용"
                     type="textarea"
-                    value={item.contents}
-                    onChange={(e) => changeBoardItem("contents", item, e)}
+                    value={item.content}
+                    onChange={(e) => changeBoardItem("content", item, e)}
                   />
                 </td>
                 <td className="px-4 py-1 border-b border-gray-300">
-                  {item.username}
+                  {item.userid}
                 </td>
                 <td className="px-4 py-1 border-b border-gray-300 space-x-2">
                   <button
@@ -168,7 +168,7 @@ const BoardCRUDComponent = () => {
                   <button
                     className="px-2 py-1 font-semibold text-white bg-red-600 rounded-lg hover:bg-red-700"
                     onClick={() =>
-                      item.idx !== null && deleteMutation.mutate(item.idx)
+                      item.id !== null && deleteMutation.mutate(item.id)
                     }
                     disabled={deleteMutation.isPending}
                   >

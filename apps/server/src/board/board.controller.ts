@@ -24,7 +24,7 @@ export class BoardController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get(':id')
-  public async getOne(id: string) {
+  public async getOne(@Param('id') id: string) {
     return await this.service.findOne(id);
   }
 
@@ -42,7 +42,7 @@ export class BoardController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get('delete/:id')
-  public async delete(id: string) {
+  public async delete(@Param('id') id: string) {
     return await this.service.delete(id);
   }
 }
