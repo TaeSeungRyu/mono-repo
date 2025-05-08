@@ -17,7 +17,6 @@ export const authOptions = {
       },
       //요청 샘플 입니다.
       async authorize(credentials) {
-        //http://127.0.0.1:8080
         const requestResult = await fetch(
           `${process.env.API_SERVER_URL}/auth/login`,
           {
@@ -31,13 +30,7 @@ export const authOptions = {
             }),
           },
         );
-
-        // const user = prepare.get({
-        //   username: credentials.username,
-        //   password: credentials.password,
-        // });
         const user = await requestResult?.json();
-
         if (user?.result?.success) {
           const getMe = await fetch(
             `${process.env.API_SERVER_URL}/user/my-info`,

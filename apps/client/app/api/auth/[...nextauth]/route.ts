@@ -22,13 +22,12 @@ const handler = NextAuth({
   },
   providers: authOptions.providers,
   callbacks: {
-    async jwt({ token, user, session }): Promise<JWT> {
+    async jwt({ token, user, session, trigger }): Promise<JWT> {
       if (user) {
         token.username = user.username; //사용자 정의 필드 추가
         token.serverAccessToken = user.serverAccessToken; //사용자 정의 필드 추가
         token.serverRefreshToken = user.serverRefreshToken; //사용자 정의 필드 추가
       }
-      //console.log("token", token);
       return token;
     },
     async session({ session, token }) {

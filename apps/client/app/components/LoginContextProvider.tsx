@@ -21,7 +21,6 @@ export default function LoginContextProvider({ children }: Props) {
       const storedData = useUserService.getLocalStorage;
       if (!storedData) {
         const data = await useUserService.findMe();
-        console.log("data data data", data);
         useUserService.alterLocalStorage(data, () => {
           setLoginData(data);
         });

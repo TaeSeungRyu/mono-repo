@@ -10,7 +10,7 @@ const BoardComponent = () => {
   const { loginData }: any = useContext(LoginContext);
 
   useEffect(() => {
-    if (loginData.data.username) {
+    if (loginData?.data?.username) {
       setMe(loginData.data);
     }
   }, [loginData.data]);

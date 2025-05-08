@@ -18,6 +18,7 @@ const _addAuthHeader = async (request: NextRequest, headers: Headers) => {
     });
     //console.log("savedValue savedValue savedValue", savedValue);
     headers.set("Authorization", `Bearer ${savedValue?.serverAccessToken}`); //여기에 Auth같은 헤더 추가를 하면 됩니다.
+    headers.set("cookie", `refresh_token=${savedValue?.serverRefreshToken}`); //쿠키도 추가
   } catch (e) {
     console.log(e);
   }
@@ -37,7 +38,10 @@ export async function middleware(request: NextRequest) {
       headers: requestHeaders,
     },
   });
-  response.headers.set("x-hello-from-middleware2", "hello"); //응답 헤더 변경 가능
+  console.log("response.status:", response.status);
+  if (response.status == 401) {
+    console.log("401 Unauthorized");
+  }
   return response;
 }
 

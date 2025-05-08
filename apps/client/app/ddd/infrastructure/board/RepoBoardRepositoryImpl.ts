@@ -1,10 +1,11 @@
+import { fetcher } from "@/app/lib/useFetch";
 import { BoardRepository } from "../../domain/board/BoardRepository";
 import { Board } from "../../domain/board/Repo";
 import { CommonResponse } from "../../domain/CommonResponse";
 
 export class RepoBoardRepositoryImpl implements BoardRepository {
   async selectAll(): Promise<CommonResponse> {
-    const meResult = await fetch(`/api-server/board`, {
+    const meResult = await fetcher(`/api-server/board`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
