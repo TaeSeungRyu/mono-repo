@@ -14,7 +14,7 @@ import { RedisService } from 'src/redis/redis.service';
     PassportModule,
     JwtModule.register({
       secret: `${SECRETORKEY}`,
-      signOptions: { expiresIn: '1m' },
+      signOptions: { expiresIn: '1h' },
     }),
   ],
   controllers: [AuthController],

@@ -144,7 +144,8 @@ export class AuthService {
    * @returns refresh_token이 유효하지 않을 경우 success: false를 포함한 ResponseDto를 반환합니다.
    */
   async refreshToken(req: Request): Promise<ResponseDto> {
-    if (!req.user) {
+    console.log(req.cookies[JWTCode.refreshToken]);
+    if (!req.cookies[JWTCode.refreshToken]) {
       return new Promise((resolve) => {
         resolve(
           new ResponseDto(
@@ -160,23 +161,6 @@ export class AuthService {
       });
     }
     const refreshToken = req.cookies[JWTCode.refreshToken] as string;
-    const savedRefreshToken = await this.redisService.get(req.user?.username);
-
-    if (!refreshToken || refreshToken !== savedRefreshToken) {
-      return new Promise((resolve) => {
-        resolve(
-          new ResponseDto(
-            {
-              access_token: '',
-              refresh_token: '',
-              success: false,
-            },
-            'invalid_refresh_token',
-            'Refresh token이 없습니다.',
-          ),
-        );
-      });
-    }
     try {
       const payload: JwtPayload = this.jwtService.decode(refreshToken);
       const accessToken = this.jwtService.sign({ username: payload.username });
@@ -194,6 +178,7 @@ export class AuthService {
         );
       });
     } catch (error: any) {
+      console.log(error);
       return new Promise((resolve) => {
         resolve(
           new ResponseDto(

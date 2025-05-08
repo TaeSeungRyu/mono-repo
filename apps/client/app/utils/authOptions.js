@@ -14,43 +14,70 @@ export const authOptions = {
       credentials: {
         username: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" },
+        access_token: { label: "Access Token", type: "text" },
+        refresh_token: { label: "Refresh Token", type: "text" },
       },
       //요청 샘플 입니다.
       async authorize(credentials) {
-        const requestResult = await fetch(
-          `${process.env.API_SERVER_URL}/auth/login`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              username: credentials.username,
-              password: credentials.password,
-            }),
-          },
-        );
-        const user = await requestResult?.json();
-        if (user?.result?.success) {
+        console.log(credentials);
+        if (credentials.access_token) {
+          console.log("access_token access_token access_token in in in");
+          debugger;
           const getMe = await fetch(
             `${process.env.API_SERVER_URL}/user/my-info`,
             {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${user.result.access_token}`,
+                Authorization: `Bearer ${credentials.access_token}`,
               },
             },
           );
           const me = await getMe?.json();
           return {
-            serverAccessToken: user.result.access_token,
-            serverRefreshToken: user.result.refresh_token,
+            serverAccessToken: credentials.access_token,
+            serverRefreshToken: credentials.refresh_token,
             id: me.result.data.id,
             username: me.result.data.username,
             name: me.result.data.name,
           };
+        } else {
+          const requestResult = await fetch(
+            `${process.env.API_SERVER_URL}/auth/login`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                username: credentials.username,
+                password: credentials.password,
+              }),
+            },
+          );
+          const user = await requestResult?.json();
+          if (user?.result?.success) {
+            const getMe = await fetch(
+              `${process.env.API_SERVER_URL}/user/my-info`,
+              {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${user.result.access_token}`,
+                },
+              },
+            );
+            const me = await getMe?.json();
+            return {
+              serverAccessToken: user.result.access_token,
+              serverRefreshToken: user.result.refresh_token,
+              id: me.result.data.id,
+              username: me.result.data.username,
+              name: me.result.data.name,
+            };
+          }
         }
+
         throw new Error("Invalid username or password");
       },
     }),

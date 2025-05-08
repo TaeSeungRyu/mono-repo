@@ -14,22 +14,26 @@ export async function GET(request: NextRequest) {
       token: token,
       secret: process.env.NEXTAUTH_SECRET || "",
     });
-    console.log("savedValue", savedValue);
+
     const refreshResult = await fetch(
       `${process.env.API_SERVER_URL}/auth/refresh-token`,
       {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${savedValue?.serverAccessToken}`,
           cookie: `refresh_token=${savedValue?.serverRefreshToken}`,
         },
       },
     );
-    const { data } = await refreshResult.json();
-    console.log("refreshResult", data);
+
+    const { result } = await refreshResult.json();
     const response = NextResponse.json({
       success: true,
-      data: data?.result?.access_token,
+      data: {
+        access_token: result?.access_token,
+        refresh_token: savedValue?.serverRefreshToken,
+      },
     });
     return response;
   } catch (error: any) {

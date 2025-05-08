@@ -20,13 +20,19 @@ export async function fetcher(
       headers: {},
     });
 
-    console.log("refreshRes", refreshRes);
+    const result = await refreshRes.json();
 
-    // signIn("credentials", {
-    //   redirect: false,
-    // });
+    console.log("refreshRes", result?.data?.access_token);
+    console.log("refreshRes result", result?.data?.refresh_token);
+
+    const ress: any = await signIn("credentials", {
+      access_token: result?.data?.access_token,
+      refresh_token: result?.data?.refresh_token,
+      username: "",
+      password: "",
+      redirect: false,
+    });
     debugger;
-
     if (refreshRes.ok) {
       // 새 토큰 갱신된 후 재요청 (단, 재시도는 1회만)
       return await fetcher(input, init, false);

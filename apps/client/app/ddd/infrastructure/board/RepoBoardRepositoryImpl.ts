@@ -21,7 +21,7 @@ export class RepoBoardRepositoryImpl implements BoardRepository {
     });
   }
   async selectById(id: string): Promise<CommonResponse> {
-    const meResult = await fetch(`/api-server/board/${id}`, {
+    const meResult = await fetcher(`/api-server/board/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -37,7 +37,7 @@ export class RepoBoardRepositoryImpl implements BoardRepository {
     });
   }
   async insert(board: Board): Promise<CommonResponse> {
-    const meResult = await fetch(`/api-server/board/create`, {
+    const meResult = await fetcher(`/api-server/board/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -54,7 +54,7 @@ export class RepoBoardRepositoryImpl implements BoardRepository {
     });
   }
   async update(board: Board): Promise<CommonResponse> {
-    const meResult = await fetch(`/api-server/board/update/${board.id}`, {
+    const meResult = await fetcher(`/api-server/board/update/${board.id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -71,7 +71,7 @@ export class RepoBoardRepositoryImpl implements BoardRepository {
     });
   }
   async delete(id: string): Promise<CommonResponse> {
-    const meResult = await fetch(`/api-server/board/delete/${id}`, {
+    const meResult = await fetcher(`/api-server/board/delete/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
