@@ -3,10 +3,8 @@
 import React, { useState } from "react";
 import InputField from "./InputComponent";
 import { useUserService } from "../ddd/actions";
-import { useRouter } from "next/navigation";
 
 const SignupPageComponent = () => {
-  const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -16,7 +14,7 @@ const SignupPageComponent = () => {
     const validResult = useUserService.validateDataBeforInsert(
       username,
       password,
-      name
+      name,
     );
     if (!validResult.result) {
       alert(validResult.message);
@@ -24,29 +22,17 @@ const SignupPageComponent = () => {
     }
     if (!confirm("회원가입 하시겠습니까?")) return;
     const result = await useUserService.signUp(username, password, name); //나중에 응답 타입에 대한 정의는 필수!
-    if (result.status === 200) {
+    if (result.ok) {
       alert("회원가입이 완료되었습니다.");
     } else {
       alert("회원가입에 실패하였습니다.");
     }
   };
 
-  const testMe = () => {
-    fetch("/api/user/me", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then((res) => {
-      console.log(res);
-    });
-  };
-
   return (
     <>
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-2xl shadow-lg">
-          <div onClick={testMe}>test call api</div>
           <h2 className="text-2xl font-bold text-center text-gray-900">
             회원가입
           </h2>

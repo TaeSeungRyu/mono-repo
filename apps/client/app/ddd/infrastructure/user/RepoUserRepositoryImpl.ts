@@ -19,7 +19,7 @@ export class UserRepositoryImpl implements UserRepository {
     password: string,
     name: string | null,
   ): Promise<any> {
-    const insertResult = await fetch("/api/user/signup", {
+    const insertResult = await fetch("/api-server/user/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

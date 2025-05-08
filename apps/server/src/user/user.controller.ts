@@ -19,4 +19,9 @@ export class UserController {
   public async updateInfo(@Body() body: User) {
     return await this.service.updateUserInfo(body);
   }
+
+  @Post('signup')
+  public async signUp(@Body() body: User) {
+    return await this.service.signUp(body);
+  }
 }

@@ -135,4 +135,28 @@ export class UserService {
       );
     }
   }
+
+  async signUp(body: User) {
+    const { username, password, name } = body;
+    const user = await this.users.findOne({
+      where: {
+        username,
+      },
+    });
+    if (user) {
+      return new ResponseDto(
+        { success: false },
+        'error',
+        '이미 존재하는 사용자입니다.',
+      );
+    } else {
+      const newUser = this.users.create({
+        username,
+        password,
+        name,
+      });
+      await this.users.save(newUser);
+      return new ResponseDto({ success: true }, 'success', '사용자 등록 성공');
+    }
+  }
 }

@@ -5,8 +5,6 @@ import InputField from "./InputComponent";
 import { useUserService } from "../ddd/actions";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
 
 const SigninPageComponent = () => {
   const { data: session } = useSession();
@@ -26,17 +24,6 @@ const SigninPageComponent = () => {
     if (singinResult.status === 200) {
       router.push("/board");
     }
-  };
-
-  const motionAttr = {
-    first: {
-      x: 0,
-      rotate: 45,
-    },
-    animationEnd: {
-      x: 0,
-      rotate: 360,
-    },
   };
 
   return (
@@ -62,22 +49,11 @@ const SigninPageComponent = () => {
         >
           로그인
         </button>
-        <motion.div
-          variants={motionAttr}
-          initial="first" // variants에서 설정한 key값 string형태로 넣어준다.
-          animate="animationEnd"
-          transition={{
-            ease: "easeIn",
-            duration: 0.7,
-          }}
-        >
-          <Button type="button">로깅(npx shadcn@latest add button)</Button>
-        </motion.div>
       </form>
       <p className="text-sm text-center text-gray-600">
         계정이 없으신가요?{" "}
         <span
-          className="text-blue-500 hover:underline"
+          className="text-blue-500 hover:underline cursor-pointer"
           onClick={() => router.push("/signup")}
         >
           회원가입
