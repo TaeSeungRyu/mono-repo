@@ -7,6 +7,7 @@ import { User } from './user/user.entity';
 import { RedisProviderModule } from './redis/redis.module';
 import { RedisService } from './redis/redis.service';
 import { Board } from './board/board.entity';
+import { BoardModule } from './board/board.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { Board } from './board/board.entity';
     }),
     AuthModule,
     RedisProviderModule,
+    BoardModule,
   ],
   controllers: [AppController],
   providers: [RedisService],

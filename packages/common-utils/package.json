@@ -2,7 +2,7 @@
   "name": "my-common-utils",
   "main": "index.js",
   "version": "1.0.0",
-  "type": "module",
+  "type": "commonjs",
   "dependencies": {
     "dayjs": "^1.11.13",
     "debounce": "^2.2.0"

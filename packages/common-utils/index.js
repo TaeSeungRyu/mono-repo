@@ -1,22 +1,17 @@
-export const printer = (arg) => console.log("printer", arg);
-export const writer = (arg) => console.log("writer", arg);
-export const reader = (arg) => console.log("reader", arg);
-export const logger = (arg) => console.log("logger", arg);
-
 //이런 식으로 외부 lib 연동 샘플
-import dayjs from "dayjs";
-export function parseDateSample(arg) {
+const dayjs = require("dayjs");
+function parseDateSample_FROM_COMMON_UTILS(arg) {
   try {
     if (arg) return dayjs(arg).format("YYYY-MM-DD");
-    return dayjs(arg).format("YYYY-MM-DD");
+    return dayjs().format("YYYY-MM-DD");
   } catch (e) {
-    console.error(e);
+    if (e instanceof Error) {
+      console.error(e.message); // optional logging
+    }
   }
   return "";
 }
 
-import debounce from "debounce";
-
-import { SECRETORKEY } from "my-common-props";
-
-console.log(SECRETORKEY);
+module.exports = {
+  parseDateSample_FROM_COMMON_UTILS,
+};
