@@ -1,9 +1,25 @@
 import { Module } from '@nestjs/common';
+import { CreateBoardUseCase } from './application/use-cases/create-board.use-case';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Board } from './domain/board.entity';
+import { DeleteBoardUseCase } from './application/use-cases/delete-board.use-case';
+import { FindAllBoardUseCase } from './application/use-cases/find-all-board.use-case';
+import { FindOneBoardUseCase } from './application/use-cases/find-one-board.use-case';
+import { UpdateBoardUseCase } from './application/use-cases/update-board.use-case';
+import { BoardService } from './application/services/board.service';
+import { BoardController } from './infrastructure/board.controller';
 
 @Module({
-  imports: [],
-  providers: [],
-  controllers: [],
+  imports: [TypeOrmModule.forFeature([Board])],
+  providers: [
+    CreateBoardUseCase,
+    DeleteBoardUseCase,
+    FindAllBoardUseCase,
+    FindOneBoardUseCase,
+    UpdateBoardUseCase,
+    BoardService,
+  ],
+  controllers: [BoardController],
   exports: [],
 })
 export class BoardModule {}

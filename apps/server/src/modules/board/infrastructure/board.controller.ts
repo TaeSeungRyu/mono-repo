@@ -7,10 +7,10 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { BoardService } from './board.service';
 import { AuthGuard } from '@nestjs/passport';
-import { Board } from './board.entity';
 import { Request } from 'express';
+import { BoardService } from '../application/services/board.service';
+import { Board } from '../domain/board.entity';
 
 @Controller('board')
 export class BoardController {

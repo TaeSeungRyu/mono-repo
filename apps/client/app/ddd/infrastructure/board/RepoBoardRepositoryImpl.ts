@@ -72,7 +72,7 @@ export class RepoBoardRepositoryImpl implements BoardRepository {
     });
   }
   async delete(id: string): Promise<CommonResponse> {
-    const meResult = await fetcher(`${API.BOARD_UPDATE}/${id}`, {
+    const meResult = await fetcher(`${API.BOARD_DELETE}/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

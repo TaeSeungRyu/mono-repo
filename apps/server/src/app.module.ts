@@ -6,8 +6,8 @@ import { ConfigModule } from '@nestjs/config';
 import { User } from './user/user.entity';
 import { RedisProviderModule } from './redis/redis.module';
 import { RedisService } from './redis/redis.service';
-import { Board } from './board/board.entity';
-import { BoardModule } from './board/board.module';
+import { Board } from './modules/board/domain/board.entity';
+import { BoardModule } from './modules/board/board.module';
 
 @Module({
   imports: [
