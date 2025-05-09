@@ -36,7 +36,6 @@ const handler = NextAuth({
         session.user.serverAccessToken = token.serverAccessToken; //사용자 정의 필드 추가
         session.user.serverRefreshToken = token.serverRefreshToken; //사용자 정의 필드 추가
       }
-      //  console.log("session", session);
       return session;
     },
   },

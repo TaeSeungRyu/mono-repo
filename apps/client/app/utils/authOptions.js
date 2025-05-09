@@ -1,4 +1,5 @@
 import CredentialsProvider from "next-auth/providers/credentials";
+import { API } from "../types/const";
 //import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions = {
@@ -21,7 +22,7 @@ export const authOptions = {
       async authorize(credentials) {
         if (credentials.accessToken) {
           const getMe = await fetch(
-            `${process.env.API_SERVER_URL}/user/my-info`,
+            `${process.env.API_SERVER_URL}${API.DIRECT_SERVER_MYINFO}`,
             {
               method: "GET",
               headers: {
@@ -40,7 +41,7 @@ export const authOptions = {
           };
         } else {
           const requestResult = await fetch(
-            `${process.env.API_SERVER_URL}/auth/login`,
+            `${process.env.API_SERVER_URL}${API.DIRECT_SERVER_SIGNIN}`,
             {
               method: "POST",
               headers: {
@@ -55,7 +56,7 @@ export const authOptions = {
           const user = await requestResult?.json();
           if (user?.result?.success) {
             const getMe = await fetch(
-              `${process.env.API_SERVER_URL}/user/my-info`,
+              `${process.env.API_SERVER_URL}${API.DIRECT_SERVER_MYINFO}`,
               {
                 method: "GET",
                 headers: {

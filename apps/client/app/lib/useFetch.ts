@@ -1,19 +1,18 @@
 // lib/fetcher.ts
 import { signIn } from "next-auth/react";
+import { API } from "../types/const";
 
 export async function fetcher(
   input: RequestInfo,
   init?: RequestInit,
-  retry = true,
 ): Promise<any> {
   const response = await fetch(input, {
     ...init,
   });
 
   if (response.status == 401) {
-    //const { update } = useSession();
     // accessToken이 만료된 경우 → refresh 요청
-    const refreshRes = await fetch("/api/auth/refresh", {
+    const refreshRes = await fetch(API.LOCAL_REFRESH, {
       method: "get",
       credentials: "include", // 쿠키 전송
       headers: {},
@@ -30,7 +29,7 @@ export async function fetcher(
     });
     if (refreshRes.ok && singinResult.status === 200) {
       // 새 토큰 갱신된 후 재요청 (단, 재시도는 1회만)
-      return await fetcher(input, init, false);
+      return await fetcher(input, init);
     } else {
       // 로그아웃 처리 등
       throw new Error("세션이 만료되었습니다. 다시 로그인 해주세요.");

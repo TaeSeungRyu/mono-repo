@@ -2,10 +2,11 @@ import { fetcher } from "@/app/lib/useFetch";
 import { BoardRepository } from "../../domain/board/BoardRepository";
 import { Board } from "../../domain/board/Repo";
 import { CommonResponse } from "../../domain/CommonResponse";
+import { API } from "@/app/types/const";
 
 export class RepoBoardRepositoryImpl implements BoardRepository {
   async selectAll(): Promise<CommonResponse> {
-    const meResult = await fetcher(`/api-server/board`, {
+    const meResult = await fetcher(API.BOARD, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -21,7 +22,7 @@ export class RepoBoardRepositoryImpl implements BoardRepository {
     });
   }
   async selectById(id: string): Promise<CommonResponse> {
-    const meResult = await fetcher(`/api-server/board/${id}`, {
+    const meResult = await fetcher(`${API.BOARD}/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -37,7 +38,7 @@ export class RepoBoardRepositoryImpl implements BoardRepository {
     });
   }
   async insert(board: Board): Promise<CommonResponse> {
-    const meResult = await fetcher(`/api-server/board/create`, {
+    const meResult = await fetcher(API.BOARD_CREATE, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -54,7 +55,7 @@ export class RepoBoardRepositoryImpl implements BoardRepository {
     });
   }
   async update(board: Board): Promise<CommonResponse> {
-    const meResult = await fetcher(`/api-server/board/update/${board.id}`, {
+    const meResult = await fetcher(`${API.BOARD_UPDATE}/${board.id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -71,7 +72,7 @@ export class RepoBoardRepositoryImpl implements BoardRepository {
     });
   }
   async delete(id: string): Promise<CommonResponse> {
-    const meResult = await fetcher(`/api-server/board/delete/${id}`, {
+    const meResult = await fetcher(`${API.BOARD_UPDATE}/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
