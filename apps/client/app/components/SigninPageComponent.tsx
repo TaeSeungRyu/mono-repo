@@ -4,31 +4,49 @@ import React, { useEffect, useState } from "react";
 import InputField from "./InputComponent";
 import { useUserService } from "../ddd/actions";
 import { useRouter } from "next/navigation";
-import { useSession, signOut } from "next-auth/react";
+import { signOut, getCsrfToken } from "next-auth/react";
+import { useMutation } from "@tanstack/react-query";
 
 const SigninPageComponent = () => {
-  const { data: session } = useSession();
-  useEffect(() => {
-    if (session) {
-      signOut({ redirect: false });
-      useUserService.alterLocalStorage(null, null);
-    }
-  }, []);
   const router = useRouter();
   const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("admin1234");
+  const [csrfToken, setCsrfToken] = useState<string | undefined>();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const singinResult = await useUserService.signIn(username, password);
-    if (singinResult.status === 200) {
-      router.push("/board");
+  useEffect(() => {
+    signOut({ redirect: false });
+    useUserService.alterLocalStorage(null, null);
+    if (!csrfToken) {
+      getCsrfToken().then((token) => {
+        setCsrfToken(token);
+      });
     }
-  };
+  }, []);
+
+  const { mutate: handleLogin, isPending } = useMutation({
+    mutationFn: async () => {
+      const singinResult = await useUserService.signIn(username, password);
+      return singinResult;
+    },
+    onSuccess: (singinResult) => {
+      if (singinResult.status === 200) {
+        router.push("/board");
+      } else {
+        alert("로그인 실패");
+      }
+    },
+    onError: (error, variables, context) => {
+      // 실패 시 롤백: 화면에 반영한 데이터를 취소
+      console.error("등록 실패", error);
+      alert("로그인 실패");
+    },
+  });
 
   return (
     <>
-      <form onSubmit={handleLogin} className="space-y-4">
+      {isPending ? "조회중..." : ""}
+      <form className="space-y-4">
+        <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
         <InputField
           label="아이디"
           type="text"
@@ -44,8 +62,9 @@ const SigninPageComponent = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
         <button
-          type="submit"
+          type="button"
           className="w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+          onClick={() => handleLogin()}
         >
           로그인
         </button>

@@ -22,8 +22,8 @@ export async function fetcher(
     const result = await refreshRes.json();
 
     const singinResult: any = await signIn("credentials", {
-      access_token: result?.data?.access_token,
-      refresh_token: result?.data?.refresh_token,
+      accessToken: result?.data?.accessToken,
+      refreshToken: result?.data?.refreshToken,
       username: "",
       password: "",
       redirect: false,

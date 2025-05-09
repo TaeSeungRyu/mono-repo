@@ -3,6 +3,6 @@ export interface JwtPayload {
 }
 
 export enum JWTCode {
-  refreshToken = 'refresh_token',
-  accessToken = 'access_token',
+  refreshToken = 'refreshToken',
+  accessToken = 'accessToken',
 }

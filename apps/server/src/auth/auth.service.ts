@@ -20,8 +20,8 @@ export class AuthService {
    * @param username 사용자 아이디
    * @param password 사용자 비밀번호
    * @param res 응답 객체(쿠키 설정)
-   * @returns 로그인 성공시 access_token과 refresh_token을 포함한 ResponseDto를 반환합니다.
-   * @returns 로그인 실패시 access_token과 refresh_token이 빈 문자열인 ResponseDto를 반환합니다.
+   * @returns 로그인 성공시 accessToken과 refreshToken을 포함한 ResponseDto를 반환합니다.
+   * @returns 로그인 실패시 accessToken과 refreshToken이 빈 문자열인 ResponseDto를 반환합니다.
    */
   async validateUser(
     username: string,
@@ -37,8 +37,8 @@ export class AuthService {
         resolve(
           new ResponseDto(
             {
-              access_token: '',
-              refresh_token: '',
+              accessToken: '',
+              refreshToken: '',
               success: false,
             },
             'invalid_credentials',
@@ -59,8 +59,8 @@ export class AuthService {
       resolve(
         new ResponseDto(
           {
-            access_token: accessToken,
-            refresh_token: refreshToken,
+            accessToken: accessToken,
+            refreshToken: refreshToken,
             success: true,
           },
           '',
@@ -74,15 +74,15 @@ export class AuthService {
    *
    * @param res 응답 객체(쿠키 설정)
    * @param username 사용자 아이디
-   * @param refresh_token refresh_token
-   * @description 쿠키에 refresh_token을 설정하고 Redis에 캐시합니다.
+   * @param refreshToken refreshToken
+   * @description 쿠키에 refreshToken을 설정하고 Redis에 캐시합니다.
    */
   private setCookieAndRedisCache(
     res: Response,
     user: User,
-    refresh_token: string,
+    refreshToken: string,
   ): void {
-    res.cookie(JWTCode.refreshToken, refresh_token, {
+    res.cookie(JWTCode.refreshToken, refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
@@ -94,7 +94,7 @@ export class AuthService {
           await this.redisService.del(user.username);
           await this.redisService.del(`${user.username}_info`);
         }
-        await this.redisService.set(user.username, refresh_token, 60 * 60 * 1); // 1시간
+        await this.redisService.set(user.username, refreshToken, 60 * 60 * 1); // 1시간
         await this.redisService.set(
           `${user.username}_info`,
           JSON.stringify(user),
@@ -140,8 +140,8 @@ export class AuthService {
   /**
    *
    * @param req 요청 객체
-   * @description refresh_token을 사용하여 새로운 access_token을 발급합니다.
-   * @returns refresh_token이 유효하지 않을 경우 success: false를 포함한 ResponseDto를 반환합니다.
+   * @description refreshToken을 사용하여 새로운 accessToken을 발급합니다.
+   * @returns refreshToken이 유효하지 않을 경우 success: false를 포함한 ResponseDto를 반환합니다.
    */
   async refreshToken(req: Request): Promise<ResponseDto> {
     console.log(req.cookies[JWTCode.refreshToken]);
@@ -150,8 +150,8 @@ export class AuthService {
         resolve(
           new ResponseDto(
             {
-              access_token: '',
-              refresh_token: '',
+              accessToken: '',
+              refreshToken: '',
               success: false,
             },
             'invalid_user',
@@ -168,8 +168,8 @@ export class AuthService {
         resolve(
           new ResponseDto(
             {
-              access_token: accessToken,
-              refresh_token: refreshToken,
+              accessToken: accessToken,
+              refreshToken: refreshToken,
               success: true,
             },
             '',
@@ -183,8 +183,8 @@ export class AuthService {
         resolve(
           new ResponseDto(
             {
-              access_token: '',
-              refresh_token: '',
+              accessToken: '',
+              refreshToken: '',
               success: false,
             },
             `${error}`,

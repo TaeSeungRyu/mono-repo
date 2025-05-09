@@ -1,8 +1,8 @@
 export class ResponseDto {
   result?: {
     success: boolean;
-    access_token?: string;
-    refresh_token?: string;
+    accessToken?: string;
+    refreshToken?: string;
     data?: any;
   };
   error?: string;
@@ -11,8 +11,8 @@ export class ResponseDto {
   constructor(
     result: {
       success: boolean;
-      access_token: string;
-      refresh_token: string;
+      accessToken: string;
+      refreshToken: string;
       data?: any;
     },
     error: string,
@@ -21,8 +21,8 @@ export class ResponseDto {
   constructor(
     result?: {
       success: boolean;
-      access_token?: string;
-      refresh_token?: string;
+      accessToken?: string;
+      refreshToken?: string;
       data?: any;
     },
     error?: string,
@@ -31,8 +31,8 @@ export class ResponseDto {
   constructor(
     result?: {
       success: boolean;
-      access_token?: string;
-      refresh_token?: string;
+      accessToken?: string;
+      refreshToken?: string;
       data?: any;
     },
     error?: string,

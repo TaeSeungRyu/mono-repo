@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${savedValue?.serverAccessToken}`,
-          cookie: `refresh_token=${savedValue?.serverRefreshToken}`,
+          cookie: `refreshToken=${savedValue?.serverRefreshToken}`,
         },
       },
     );
@@ -31,8 +31,8 @@ export async function GET(request: NextRequest) {
     const response = NextResponse.json({
       success: true,
       data: {
-        access_token: result?.access_token,
-        refresh_token: savedValue?.serverRefreshToken,
+        accessToken: result?.accessToken,
+        refreshToken: savedValue?.serverRefreshToken,
       },
     });
     return response;

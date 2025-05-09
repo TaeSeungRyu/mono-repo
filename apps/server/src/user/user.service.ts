@@ -58,8 +58,7 @@ export class UserService {
   async findUserById(req: Request): Promise<ResponseDto> {
     if (req?.user && req?.user?.username) {
       const username = req?.user?.username;
-      const user = await this.redisService.get(`${username}_info`);
-
+      let user = await this.redisService.get(`${username}_info`);
       if (!user) {
         const userInfo = await this.users.findOne({
           where: {
@@ -73,6 +72,7 @@ export class UserService {
             60 * 60 * 24,
           );
         }
+        user = await this.redisService.get(`${username}_info`);
       }
 
       const data = this.stringToJson(user);
@@ -85,8 +85,8 @@ export class UserService {
     return new ResponseDto(
       {
         success: false,
-        access_token: '',
-        refresh_token: '',
+        accessToken: '',
+        refreshToken: '',
       },
       'error',
       '정보가 없습니다.',

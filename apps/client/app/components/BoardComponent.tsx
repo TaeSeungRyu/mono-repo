@@ -2,8 +2,6 @@
 import { useContext } from "react";
 import React, { useEffect, useState } from "react";
 import { LoginContext } from "./LoginContextProvider";
-import { useQuery } from "@tanstack/react-query";
-import { useBoardService } from "../ddd/actions";
 
 const BoardComponent = () => {
   const [me, setMe] = useState<any>({ username: "", name: "" });
@@ -15,7 +13,6 @@ const BoardComponent = () => {
     }
   }, [loginData.data]);
 
-  console.log(me);
   return (
     <>
       <div>기본 내 정보 : {me.username}</div>
