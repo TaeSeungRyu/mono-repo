@@ -1,8 +1,9 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
-import { UserService } from './user.service';
+
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
-import { User } from './user.entity';
+import { UserService } from '../application/service/user.service';
+import { User } from '../domain/user.entity';
 
 @Controller('user')
 export class UserController {

@@ -3,11 +3,13 @@ import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { User } from './user/user.entity';
+
 import { RedisProviderModule } from './redis/redis.module';
 import { RedisService } from './redis/redis.service';
 import { Board } from './modules/board/domain/board.entity';
 import { BoardModule } from './modules/board/board.module';
+import { User } from './modules/user/domain/user.entity';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -27,6 +29,7 @@ import { BoardModule } from './modules/board/board.module';
     AuthModule,
     RedisProviderModule,
     BoardModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [RedisService],

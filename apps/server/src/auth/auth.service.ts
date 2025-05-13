@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
 import { ResponseDto } from 'src/common/common.dto';
-import { UserService } from 'src/user/user.service';
+
 import { JWTCode, JwtPayload } from './jwt-payload.interface';
 import { RedisService } from 'src/redis/redis.service';
-import { User } from 'src/user/user.entity';
+import { UserService } from 'src/modules/user/application/service/user.service';
+import { User } from 'src/modules/user/domain/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -53,7 +54,9 @@ export class AuthService {
       { expiresIn: '1d' },
     );
 
-    this.setCookieAndRedisCache(res, user, refreshToken);
+    if (user.result?.data instanceof User) {
+      this.setCookieAndRedisCache(res, user.result?.data, refreshToken);
+    }
 
     return new Promise((resolve) => {
       resolve(
