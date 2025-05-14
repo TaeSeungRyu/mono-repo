@@ -4,7 +4,6 @@ import CalendarComponent from "../components/CalendarComponent";
 export default async function CalendarPage() {
   return (
     <div className="grid items-center justify-items-center">
-      <div>calendar</div>
       <CalendarComponent></CalendarComponent>
     </div>
   );

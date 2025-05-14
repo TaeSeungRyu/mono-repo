@@ -1,16 +1,18 @@
 "use client";
 import dayjs, { Dayjs } from "dayjs";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { calculateDay, calendarType, DAT_OF_WEEK_KOR } from "./ComponentUtil";
 import ArrowLeft from "../../public/left-arrow.svg";
 import ArrowRight from "../../public/right-arrow.svg";
 import Modal from "./Modal";
+import YearPickerModal from "./YearPickerModal"; // ← 경로는 파일 위치에 따라 조정
 
 const CalendarComponent = () => {
   const [calendarArray, setCalendarData] = useState<Array<calendarType>>([]);
   const [currentDate, setCurrentDate] = useState<Dayjs>(dayjs());
   const [modalTitle, setModalTitle] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
+  const [showYearPicker, setShowYearPicker] = useState(false);
 
   useEffect(() => {
     buildCalendarDate();
@@ -43,6 +45,10 @@ const CalendarComponent = () => {
     setIsOpen(true);
   };
 
+  const runYearPicker = (arg: boolean) => {
+    setShowYearPicker(arg);
+  };
+
   return (
     <>
       <Modal
@@ -60,8 +66,15 @@ const CalendarComponent = () => {
           </button>
         </div>
       </Modal>
+
       <div className="w-full bg-white py-3 px-8">
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center relative">
+          <YearPickerModal
+            currentDate={currentDate}
+            onSelectYear={(newDate) => buildCalendarDate(newDate)}
+            onClose={() => runYearPicker(false)}
+            isOpen={showYearPicker}
+          />
           <div className="flex justify-center items-center gap-3 select-none">
             <div
               className="cursor-pointer w-5 h-5"
@@ -69,7 +82,10 @@ const CalendarComponent = () => {
             >
               <ArrowLeft></ArrowLeft>
             </div>
-            <div className="text-center text-2xl font-bold text-gray-800 py-4">
+            <div
+              className="text-center text-2xl font-bold text-gray-800 py-4 cursor-pointer"
+              onClick={() => runYearPicker(true)}
+            >
               {currentDate.format("YYYY년 MM월")}
             </div>
             <div
@@ -80,7 +96,7 @@ const CalendarComponent = () => {
             </div>
           </div>
         </div>
-        <div className="w-full border  rounded-2xl shadow-md">
+        <div className="w-full border rounded-2xl shadow-md">
           <div className="grid grid-cols-7 text-center font-semibold text-gray-700">
             {DAT_OF_WEEK_KOR.map((day: string, index: number) => {
               const isLastColumn = index < 7 && index != 0;
