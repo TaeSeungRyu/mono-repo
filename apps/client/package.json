@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@svgr/webpack": "^8.1.0",
     "@tanstack/eslint-plugin-query": "^5.62.16",
     "@types/bcrypt": "^5.0.2",
     "@types/better-sqlite3": "^7.6.12",
