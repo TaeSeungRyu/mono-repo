@@ -7,12 +7,13 @@ import ArrowRight from "../../public/right-arrow.svg";
 import Modal from "./Modal";
 import YearPickerModal from "./YearPickerModal"; // ← 경로는 파일 위치에 따라 조정
 import InputField from "./InputComponent";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCalendarService } from "../ddd/actions";
 
 const queryKey = "calendarList";
 
 const CalendarComponent = () => {
+  const queryClient = useQueryClient();
   const [calendarArray, setCalendarData] = useState<Array<calendarType>>([]);
   const [currentDate, setCurrentDate] = useState<Dayjs>(dayjs());
   const [modalTitle, setModalTitle] = useState<string>("");
@@ -25,24 +26,14 @@ const CalendarComponent = () => {
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [calendarInfo, setCalendarInfo] = useState<any>(null);
 
-  useEffect(() => {
-    buildCalendarDate(dayjs());
-  }, []);
-
-  useEffect(() => {
-    console.log("useEffect", calendarArray);
-    if (calendarArray.length == 0) return;
-    const _currentDayInMonth = calendarArray.find(
-      (day: calendarType) => day.type == "current",
-    );
-    setCurrentDate(_currentDayInMonth?.date || dayjs());
-  }, [calendarArray]);
-
   const buildCalendarDate = async (day: Dayjs = dayjs()) => {
     return new Promise((resolve) => {
       const newArray = calculateDay(day, (dayArray: any) => {});
-      console.log("newArray newArray newArray newArray", newArray);
+      const _currentDayInMonth = newArray.find(
+        (day: calendarType) => day.type == "current",
+      );
       setCalendarData([...newArray]);
+      setCurrentDate(_currentDayInMonth?.date || dayjs());
       resolve(true);
     });
   };
@@ -50,13 +41,11 @@ const CalendarComponent = () => {
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/[^0-9]/g, "").slice(0, 11); // 숫자만, 최대 11자리
     let formatted = raw;
-
     if (raw.length >= 3 && raw.length <= 7) {
       formatted = `${raw.slice(0, 3)}-${raw.slice(3)}`;
     } else if (raw.length > 7) {
       formatted = `${raw.slice(0, 3)}-${raw.slice(3, 7)}-${raw.slice(7)}`;
     }
-
     setPhoneNumber(formatted);
   };
 
@@ -94,7 +83,6 @@ const CalendarComponent = () => {
 
   const runInfoModal = (day: calendarType) => {
     setIsInfoOpen(true);
-    console.log(day.option);
     setCalendarInfo(day.option);
   };
 
@@ -117,11 +105,65 @@ const CalendarComponent = () => {
       return data;
     },
     gcTime: 0,
-    staleTime: 0,
-    enabled: true,
+    staleTime: 1000,
+    refetchOnMount: true,
+    enabled: false,
   });
+
   useEffect(() => {
-    if (calednarListDataFromServer.length > 0) {
+    buildCalendarDate(currentDate);
+  }, []);
+
+  //리팩토링중 -----------------
+  const [tmpCalendarArray, setTmpCalendarArray] = useState<Array<calendarType>>(
+    [],
+  );
+  const [startDay, setStartDay] = useState<string>("");
+  const [endDay, setEndDay] = useState<string>("");
+  const refectorying = () => {
+    const days = calculateDay(currentDate, (dayArray: any) => {});
+    setStartDay(
+      days[0].stringFormat || dayjs().startOf("month").format("YYYY-MM-DD"),
+    );
+    setEndDay(
+      days[days.length - 1].stringFormat ||
+        dayjs().endOf("month").format("YYYY-MM-DD"),
+    );
+    setTmpCalendarArray(days);
+    refetch();
+  };
+
+  useEffect(() => {
+    const reArray = tmpCalendarArray.map((day: calendarType) => {
+      day.option = [];
+      calednarListDataFromServer.forEach((item: any) => {
+        if (day.stringFormat == item.scheduleday) {
+          day.option.push({
+            id: item.id,
+            content: item.content,
+            phonenumber: item.phonenumber,
+            scheduleday: item.scheduleday,
+            userid: item.userid,
+            createdday: item.createdday,
+          });
+        }
+      });
+      return day;
+    });
+    setCalendarData([...reArray]);
+  }, [calednarListDataFromServer]);
+  //리팩토링중 -----------------
+
+  //TODO : 이걸 리팩토링 하려면,
+  //1. 먼저 조회용 start, end 날짜를 선언 해야 합니다.
+  //2. 그 날짜를 기준으로 데이터를 조회 합니다.
+  //3. 데이터가 있든 없든지 간에 이때 배열을 생성하여 줍니다.
+  //4. 그 배열을 기준으로 api 서버에서 가져온 데이터를 넣어 줍니다.
+  //5. 그 배열을 기준으로 화면에 보여줍니다.(setCalendarData)
+  //###### 이거 해결 안되면 캐싱 안되어 계속 서버에 요청함!(사실 리스트 데이터라서 캐싱이 필요 없음) ######
+
+  useEffect(() => {
+    if (calendarArray.length > 0 && calednarListDataFromServer.length > 0) {
       const reArray: Array<calendarType> = calendarArray.map(
         (day: calendarType) => {
           day.option = [];
@@ -140,7 +182,7 @@ const CalendarComponent = () => {
           return day;
         },
       );
-      setCalendarData(reArray);
+      setCalendarData([...reArray]);
     }
   }, [calednarListDataFromServer]);
 
@@ -174,7 +216,7 @@ const CalendarComponent = () => {
       setPhoneNumber(""); // 입력 필드 초기화
       setContent("");
       setIsOpen(false);
-      refetch();
+      queryClient.invalidateQueries({ queryKey: [queryKey] });
     },
   });
 
@@ -191,7 +233,7 @@ const CalendarComponent = () => {
       setPhoneNumber(""); // 입력 필드 초기화
       setContent("");
       setIsOpen(false);
-      refetch();
+      queryClient.invalidateQueries({ queryKey: [queryKey] });
     },
   });
 
@@ -203,7 +245,7 @@ const CalendarComponent = () => {
       setPhoneNumber(""); // 입력 필드 초기화
       setContent("");
       setIsOpen(false);
-      refetch();
+      queryClient.invalidateQueries({ queryKey: [queryKey] });
     },
   });
 
