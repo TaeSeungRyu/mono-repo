@@ -20,7 +20,6 @@ export class CalendarService {
     startDay: string,
     endDay: string,
   ): Promise<CommonResponse> {
-    console.log("scheduleday-client", startDay, endDay);
     if (!startDay || !endDay) {
       return new CommonResponse({
         data: null,

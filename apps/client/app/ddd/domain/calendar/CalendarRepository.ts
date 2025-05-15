@@ -7,7 +7,7 @@ export interface CalendarRepository {
     startDay: string,
     endDay: string,
   ): Promise<CommonResponse>;
-  insert(board: Calendar): Promise<CommonResponse>;
-  update(board: Calendar): Promise<CommonResponse>;
+  insert(arg: Calendar): Promise<CommonResponse>;
+  update(arg: Calendar): Promise<CommonResponse>;
   delete(id: string): Promise<CommonResponse>;
 }
