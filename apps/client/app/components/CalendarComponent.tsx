@@ -26,10 +26,11 @@ const CalendarComponent = () => {
   const [calendarInfo, setCalendarInfo] = useState<any>(null);
 
   useEffect(() => {
-    buildCalendarDate();
+    buildCalendarDate(dayjs());
   }, []);
 
   useEffect(() => {
+    console.log("useEffect", calendarArray);
     if (calendarArray.length == 0) return;
     const _currentDayInMonth = calendarArray.find(
       (day: calendarType) => day.type == "current",
@@ -39,7 +40,9 @@ const CalendarComponent = () => {
 
   const buildCalendarDate = async (day: Dayjs = dayjs()) => {
     return new Promise((resolve) => {
-      setCalendarData(calculateDay(day, (dayArray: any) => {}));
+      const newArray = calculateDay(day, (dayArray: any) => {});
+      console.log("newArray newArray newArray newArray", newArray);
+      setCalendarData([...newArray]);
       resolve(true);
     });
   };
@@ -100,7 +103,11 @@ const CalendarComponent = () => {
   };
 
   //데이터 CURD 부분 -----
-  const { data: calednarListDataFromServer = [], refetch } = useQuery({
+  const {
+    data: calednarListDataFromServer = [],
+    refetch,
+    isLoading,
+  } = useQuery({
     queryKey: [queryKey],
     queryFn: async () => {
       const { data }: any = await useCalendarService.selectByScheduleday(
@@ -109,6 +116,8 @@ const CalendarComponent = () => {
       );
       return data;
     },
+    gcTime: 0,
+    staleTime: 0,
     enabled: true,
   });
   useEffect(() => {
@@ -287,7 +296,11 @@ const CalendarComponent = () => {
           </button>
         </div>
       </Modal>
-
+      {isLoading && (
+        <div className="fixed inset-0 bg-white/50 backdrop-blur-xs flex items-center justify-center z-50">
+          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      )}
       <div className="w-full bg-white py-3 px-8">
         <div className="flex justify-center items-center relative">
           <YearPickerModal
