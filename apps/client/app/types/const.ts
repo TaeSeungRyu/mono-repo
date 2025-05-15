@@ -11,6 +11,12 @@ export enum API {
   BOARD_CREATE = `${proxy_pre_name}/board/create`,
   BOARD_UPDATE = `${proxy_pre_name}/board/update`,
   BOARD_DELETE = `${proxy_pre_name}/board/delete`,
+
+  CALENDAR = `${proxy_pre_name}/calendar`,
+  CALENDAR_CREATE = `${proxy_pre_name}/calendar/create`,
+  CALENDAR_UPDATE = `${proxy_pre_name}/calendar/update`,
+  CALENDAR_DELETE = `${proxy_pre_name}/calendar/delete`,
+
   LOCAL_REFRESH = `${client_api_pre_name}/auth/refresh`,
   DIRECT_SERVER_MYINFO = "/user/my-info",
   DIRECT_SERVER_SIGNIN = "/auth/login",

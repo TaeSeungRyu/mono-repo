@@ -6,7 +6,7 @@ export class Calendar {
   id: string;
 
   @Column({ nullable: true })
-  phoneNumber: string;
+  phonenumber: string;
 
   @Column({ nullable: true })
   content: string;

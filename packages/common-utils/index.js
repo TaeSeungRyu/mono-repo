@@ -14,6 +14,7 @@ function parseDateSample_FROM_COMMON_UTILS(arg) {
 
 function isInvalidDate_FROM_COMMON_UTILS(arg) {
   try {
+    console.log(arg);
     if (arg) return dayjs(arg).isValid();
     return false;
   } catch (e) {

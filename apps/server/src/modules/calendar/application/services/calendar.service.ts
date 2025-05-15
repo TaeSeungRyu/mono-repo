@@ -15,8 +15,8 @@ export class CalendarService {
     private readonly findUseCase: FindCalendarUseCase,
   ) {}
 
-  async find(scheduleday: string) {
-    return this.findUseCase.execute(scheduleday);
+  async find(startDay: string, endDay: string) {
+    return this.findUseCase.execute({ startDay, endDay });
   }
 
   async create(req: Request, calendar: Calendar) {

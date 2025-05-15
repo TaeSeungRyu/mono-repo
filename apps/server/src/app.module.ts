@@ -11,6 +11,8 @@ import { BoardModule } from './modules/board/board.module';
 import { User } from './modules/user/domain/user.entity';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { Calendar } from './modules/calendar/domain/calendar.entity';
+import { CalendarModule } from './modules/calendar/calendar.module';
 
 @Module({
   imports: [
@@ -24,13 +26,14 @@ import { AuthModule } from './modules/auth/auth.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [User, Board],
+      entities: [User, Board, Calendar],
       synchronize: false, // dev용 자동 스키마 sync
     }),
     AuthModule,
     RedisProviderModule,
     BoardModule,
     UserModule,
+    CalendarModule,
   ],
   controllers: [AppController],
   providers: [RedisService],

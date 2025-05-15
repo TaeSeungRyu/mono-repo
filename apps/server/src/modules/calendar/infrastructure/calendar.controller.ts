@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -17,9 +18,12 @@ export class CalendarController {
   constructor(private service: CalendarService) {}
 
   @UseGuards(AuthGuard('jwt'))
-  @Get(':scheduleday')
-  public async get(@Param('scheduleday') scheduleday: string) {
-    return await this.service.find(scheduleday);
+  @Get('')
+  public async get(
+    @Query('startDay') startDay: string,
+    @Query('endDay') endDay: string,
+  ) {
+    return await this.service.find(startDay, endDay);
   }
 
   @UseGuards(AuthGuard('jwt'))
