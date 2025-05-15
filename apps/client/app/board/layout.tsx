@@ -1,6 +1,7 @@
 import { authOptions } from "@/app/utils/authOptions";
 import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
+import Header from "../components/HeaderComponent";
 
 export default async function RootLayout({
   children,
@@ -13,5 +14,10 @@ export default async function RootLayout({
     console.log(session);
     redirect("/error");
   }
-  return <>{children}</>;
+  return (
+    <>
+      <Header></Header>
+      {children}
+    </>
+  );
 }

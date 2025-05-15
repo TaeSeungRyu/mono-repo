@@ -32,3 +32,13 @@ CREATE TABLE IF NOT EXISTS boardFile (
     fileSize VARCHAR(100),
     createdDay VARCHAR(100)
 );
+
+
+CREATE TABLE IF NOT EXISTS calendar (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(), 
+    phoneNumber VARCHAR(100),
+    content TEXT,
+    userid VARCHAR(100),
+    createdDay VARCHAR(100)
+    scheduleday VARCHAR(24)
+);

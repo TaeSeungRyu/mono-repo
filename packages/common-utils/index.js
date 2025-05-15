@@ -12,6 +12,19 @@ function parseDateSample_FROM_COMMON_UTILS(arg) {
   return "";
 }
 
+function isInvalidDate_FROM_COMMON_UTILS(arg) {
+  try {
+    if (arg) return dayjs(arg).isValid();
+    return false;
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(e.message); // optional logging
+    }
+  }
+  return false;
+}
+
 module.exports = {
   parseDateSample_FROM_COMMON_UTILS,
+  isInvalidDate_FROM_COMMON_UTILS,
 };

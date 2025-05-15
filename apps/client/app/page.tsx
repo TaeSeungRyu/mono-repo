@@ -8,7 +8,6 @@ export default function Home() {
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-2xl shadow-lg">
         <h2 className="text-3xl font-bold text-center text-gray-900">😁</h2>
         <SigninPageComponent />
-        <Link href="/calendar">Go to Calendar</Link>
       </div>
     </div>
   );
