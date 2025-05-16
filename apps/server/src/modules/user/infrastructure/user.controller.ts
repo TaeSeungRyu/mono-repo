@@ -40,4 +40,10 @@ export class UserController {
   public async findPaging(@Query() req: UserDto) {
     return await this.service.findUserWithPaging(req);
   }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post('delete')
+  public async deleteInfo(@Body() body: UserDto) {
+    return await this.service.deleteUserInfo(body);
+  }
 }

@@ -28,10 +28,12 @@ export class UserRepositoryImpl implements UserRepository {
       },
       body: JSON.stringify({ username, password, name }),
     });
-
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       if (insertResult.ok) {
-        resolve(insertResult);
+        const { result } = await insertResult.json();
+        resolve(
+          new CommonResponse({ data: result.data, success: result.success }),
+        );
       } else {
         reject(new Error("DB Insert Error"));
       }
@@ -119,12 +121,13 @@ export class UserRepositoryImpl implements UserRepository {
     });
   }
 
-  async deleteUser(id: string): Promise<any> {
-    const deleteResult = await fetcher(`${API.USERDELETE}/${id}`, {
-      method: "get",
+  async deleteUser(id: string, oldPassword: string): Promise<any> {
+    const deleteResult = await fetcher(`${API.USERDELETE}`, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({ id, oldPassword }),
     });
     return new Promise(async (resolve, reject) => {
       if (deleteResult.ok) {

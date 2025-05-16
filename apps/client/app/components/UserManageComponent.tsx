@@ -9,6 +9,7 @@ const queryKey = "userListData";
 
 const UserManageComponent = () => {
   const queryClient = useQueryClient();
+  const [isReadonly, setIsReadonly] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [userUpdateId, setUserUpdateId] = useState<string>("");
   const [username, setUsername] = useState("");
@@ -58,10 +59,18 @@ const UserManageComponent = () => {
     }
   };
 
-  const runInfoModal = (user: any) => {
-    setMyName(user.name);
-    setUsername(user.username);
-    setUserUpdateId(user.id);
+  const runInfoModal = (user?: any) => {
+    if (user) {
+      setMyName(user.name);
+      setUsername(user.username);
+      setUserUpdateId(user.id);
+      setIsReadonly(true);
+    } else {
+      setMyName("");
+      setUsername("");
+      setUserUpdateId("");
+      setIsReadonly(false);
+    }
     setOldPassword("");
     setNewPassword("");
     setNewPasswordConfirm("");
@@ -79,11 +88,30 @@ const UserManageComponent = () => {
       if (!confirm("정말로 수정 하시겠습니까?")) return;
       updateMutation.mutate();
     } else {
+      if (username == "") {
+        alert("아이디를 입력해주세요");
+        return;
+      }
+      if (myName == "") {
+        alert("이름을 입력해주세요");
+        return;
+      }
+      if (newPassword == "") {
+        alert("비밀번호를 입력해주세요");
+        return;
+      }
       if (!confirm("정말로 추가 하시겠습니까?")) return;
-      //insertMutation.mutate();
+      insertMutation.mutate();
     }
   };
-  const requestDelete = async () => {};
+  const requestDelete = async () => {
+    if (oldPassword == "") {
+      alert("기존 비밀번호를 입력해주세요");
+      return;
+    }
+    if (!confirm("정말로 삭제 하시겠습니까?")) return;
+    deleteMutation.mutate();
+  };
 
   useEffect(() => {
     if (newPassword.length == 0 && newPasswordConfirm.length == 0) {
@@ -119,6 +147,46 @@ const UserManageComponent = () => {
     },
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      const result = await useUserService.deleteData(userUpdateId, oldPassword);
+      return result;
+    },
+    onSuccess: (arg) => {
+      if (arg.success) {
+        alert("삭제 성공");
+        setIsOpen(false);
+        queryClient.invalidateQueries({ queryKey: [queryKey] });
+      } else {
+        alert("삭제 실패\n 비밀번호 확인 요망");
+      }
+    },
+    onError: (error) => {
+      alert("삭제 실패");
+      console.error(error);
+    },
+  });
+
+  const insertMutation = useMutation({
+    mutationFn: async () => {
+      const result = await useUserService.signUp(username, newPassword, myName);
+      return result;
+    },
+    onSuccess: (arg) => {
+      if (arg.success) {
+        alert("추가 성공");
+        setIsOpen(false);
+        queryClient.invalidateQueries({ queryKey: [queryKey] });
+      } else {
+        alert("추가 실패");
+      }
+    },
+    onError: (error) => {
+      alert("삭제 실패");
+      console.error(error);
+    },
+  });
+
   return (
     <div className="w-[50%] mx-auto p-6 bg-white shadow-lg rounded-2xl">
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="사용자">
@@ -128,8 +196,8 @@ const UserManageComponent = () => {
             type="text"
             placeholder="사용자 아이디"
             value={username}
-            readonly={true}
-            onChange={(e) => {}}
+            readonly={isReadonly}
+            onChange={(e) => setUsername(e.target.value)}
           />
           <InputField
             label="이름"
@@ -138,13 +206,15 @@ const UserManageComponent = () => {
             value={myName}
             onChange={(e) => setMyName(e.target.value)}
           />
-          <InputField
-            label="기존 비밀번호"
-            type="password"
-            placeholder="기존 비밀번호"
-            value={oldPassword}
-            onChange={(e) => setOldPassword(e.target.value)}
-          />
+          {userUpdateId && (
+            <InputField
+              label="기존 비밀번호"
+              type="password"
+              placeholder="기존 비밀번호"
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+            />
+          )}
           <InputField
             label="신규 비밀번호"
             type="password"
@@ -190,6 +260,13 @@ const UserManageComponent = () => {
       </Modal>
 
       <h1 className="text-2xl font-bold mb-6 text-center">👥 유저 관리</h1>
+
+      <button
+        className="mb-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+        onClick={() => runInfoModal()}
+      >
+        사용자 추가
+      </button>
 
       {isLoading && <p className="text-center text-gray-500">로딩 중...</p>}
 

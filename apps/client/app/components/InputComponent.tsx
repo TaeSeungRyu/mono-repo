@@ -29,7 +29,8 @@ const InputField: React.FC<InputFieldProps> = ({
           value={value}
           onChange={onChange}
           readOnly={readonly}
-          className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none text-[#fff]"
+          className={`w-full px-4 py-2 mt-1 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none 
+            ${readonly ? "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 cursor-not-allowed" : "dark:text-white"}`}
         />
       ) : (
         <input
@@ -38,7 +39,8 @@ const InputField: React.FC<InputFieldProps> = ({
           value={value}
           onChange={onChange}
           readOnly={readonly}
-          className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-[#fff]"
+          className={`w-full px-4 py-2 mt-1 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none 
+            ${readonly ? "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 cursor-not-allowed" : "dark:text-white"}`}
           autoComplete="off"
         />
       )}

@@ -10,6 +10,7 @@ import { SignUpUseCase } from './application/use-cases/sign-up.use-case';
 import { UpdateUserInfoUseCase } from './application/use-cases/update-user.use-case';
 import { UserController } from './infrastructure/user.controller';
 import { FindUserWithPagingUseCase } from './application/use-cases/find-paging.use-case';
+import { DeleteUserInfoUseCase } from './application/use-cases/delete-user.use-case';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
@@ -21,6 +22,7 @@ import { FindUserWithPagingUseCase } from './application/use-cases/find-paging.u
     SignUpUseCase,
     UpdateUserInfoUseCase,
     FindUserWithPagingUseCase,
+    DeleteUserInfoUseCase,
   ],
   controllers: [UserController],
   exports: [UserService], // UserService 다른 모듈에서 UserService를 사용할 수 있도록 export

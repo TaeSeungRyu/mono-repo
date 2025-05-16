@@ -25,7 +25,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} text-[#119595] dark:bg-gray-900 text-black dark:text-white`}
+        className={`${geistSans.variable} text-[#119595] text-black dark:bg-gray-900 dark:text-white`}
       >
         <NextTopLoader color="red" crawlSpeed={500} />
         <AttributeProviders>{children}</AttributeProviders>

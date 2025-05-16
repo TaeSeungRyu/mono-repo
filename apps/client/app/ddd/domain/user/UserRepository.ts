@@ -21,5 +21,5 @@ export interface UserRepository {
     newPassword: string,
     name: string | null,
   ): Promise<any>;
-  deleteUser(id: string): Promise<any>;
+  deleteUser(id: string, oldPassword: string): Promise<any>;
 }

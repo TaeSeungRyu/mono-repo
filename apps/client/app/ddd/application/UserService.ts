@@ -87,8 +87,8 @@ export class UserService {
     );
     return data;
   }
-  async deleteData(id: string) {
-    const data = await this.userRepo.deleteUser(id);
+  async deleteData(id: string, oldPassword: string) {
+    const data = await this.userRepo.deleteUser(id, oldPassword);
     return data;
   }
 }

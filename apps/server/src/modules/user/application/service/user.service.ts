@@ -9,6 +9,7 @@ import { ResponseDto } from 'src/common/common.dto';
 import { User } from '../../domain/user.entity';
 import { FindUserWithPagingUseCase } from '../use-cases/find-paging.use-case';
 import { UserDto } from '../../domain/user.dto';
+import { DeleteUserInfoUseCase } from '../use-cases/delete-user.use-case';
 
 @Injectable()
 export class UserService {
@@ -18,6 +19,7 @@ export class UserService {
     private signUpUseCase: SignUpUseCase,
     private updateUserInfoUseCase: UpdateUserInfoUseCase,
     private findUserWithPagingUseCase: FindUserWithPagingUseCase,
+    private deleteUserInfoUseCase: DeleteUserInfoUseCase,
   ) {}
   /**
    *
@@ -68,5 +70,15 @@ export class UserService {
    */
   async findUserWithPaging(body: UserDto): Promise<ResponseDto> {
     return this.findUserWithPagingUseCase.execute(body);
+  }
+
+  /**
+   *
+   * @param body 사용자 정보
+   * @description 사용자 정보를 삭제합니다.
+   * @returns  사용자 정보 삭제 결과
+   */
+  async deleteUserInfo(body: UserDto): Promise<ResponseDto> {
+    return this.deleteUserInfoUseCase.execute(body);
   }
 }
