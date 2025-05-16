@@ -1,9 +1,18 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { UserService } from '../application/service/user.service';
 import { User } from '../domain/user.entity';
+import { UserDto } from '../domain/user.dto';
 
 @Controller('user')
 export class UserController {
@@ -24,5 +33,11 @@ export class UserController {
   @Post('signup')
   public async signUp(@Body() body: User) {
     return await this.service.signUp(body);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('find-paging')
+  public async findPaging(@Query() req: UserDto) {
+    return await this.service.findUserWithPaging(req);
   }
 }

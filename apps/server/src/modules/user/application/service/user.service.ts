@@ -7,6 +7,8 @@ import { SignUpUseCase } from '../use-cases/sign-up.use-case';
 import { UpdateUserInfoUseCase } from '../use-cases/update-user.use-case';
 import { ResponseDto } from 'src/common/common.dto';
 import { User } from '../../domain/user.entity';
+import { FindUserWithPagingUseCase } from '../use-cases/find-paging.use-case';
+import { UserDto } from '../../domain/user.dto';
 
 @Injectable()
 export class UserService {
@@ -15,6 +17,7 @@ export class UserService {
     private findUserByIdUseCase: FindUserByIdUseCase,
     private signUpUseCase: SignUpUseCase,
     private updateUserInfoUseCase: UpdateUserInfoUseCase,
+    private findUserWithPagingUseCase: FindUserWithPagingUseCase,
   ) {}
   /**
    *
@@ -55,5 +58,15 @@ export class UserService {
 
   async signUp(body: User): Promise<ResponseDto> {
     return this.signUpUseCase.execute(body);
+  }
+
+  /**
+   *
+   * @param body 사용자 정보 목록
+   * @returns 사용자 정보 목록
+   * @description 사용자 정보를 페이지네이션하여 조회합니다.
+   */
+  async findUserWithPaging(body: UserDto): Promise<ResponseDto> {
+    return this.findUserWithPagingUseCase.execute(body);
   }
 }
