@@ -52,7 +52,7 @@ export class UserService {
    * @description 사용자 정보를 수정합니다.
    * @returns  사용자 정보 수정 결과
    */
-  async updateUserInfo(body: User): Promise<ResponseDto> {
+  async updateUserInfo(body: UserDto): Promise<ResponseDto> {
     return this.updateUserInfoUseCase.execute(body);
   }
 

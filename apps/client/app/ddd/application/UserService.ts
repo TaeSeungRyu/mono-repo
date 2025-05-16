@@ -25,7 +25,7 @@ export class UserService {
   validateDataBeforInsert(
     username: string,
     password: string,
-    name: string | null
+    name: string | null,
   ): validateType {
     if (!username || !password || !name) {
       return { result: false, message: "데이터를 입력해주세요" };
@@ -57,5 +57,38 @@ export class UserService {
       return null;
     }
     return JSON.parse(localStorage.getItem(this.CONTEXT_KEY) as string);
+  }
+
+  async findUserWithPage(
+    page: number,
+    limit: number,
+    username: string | null,
+    name: string | null,
+  ) {
+    const data = await this.userRepo.findUserWithPage(
+      page,
+      limit,
+      username,
+      name,
+    );
+    return data;
+  }
+  async updateData(
+    id: string,
+    oldPassword: string,
+    newPassword: string,
+    name: string | null,
+  ) {
+    const data = await this.userRepo.updateUser(
+      id,
+      oldPassword,
+      newPassword,
+      name,
+    );
+    return data;
+  }
+  async deleteData(id: string) {
+    const data = await this.userRepo.deleteUser(id);
+    return data;
   }
 }

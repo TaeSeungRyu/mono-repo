@@ -104,6 +104,7 @@ const CalendarComponent = () => {
       );
       return data;
     },
+    placeholderData: (prev) => prev,
     enabled: true,
   });
 
@@ -131,18 +132,19 @@ const CalendarComponent = () => {
     if (!isSuccess) return;
     const reArray = innerCalendarDataArray.map((day: calendarType) => {
       day.option = [];
-      calednarListDataFromServer?.forEach((item: any) => {
-        if (day.stringFormat == item.scheduleday) {
-          day.option.push({
-            id: item.id,
-            content: item.content,
-            phonenumber: item.phonenumber,
-            scheduleday: item.scheduleday,
-            userid: item.userid,
-            createdday: item.createdday,
-          });
-        }
-      });
+      calednarListDataFromServer?.forEach &&
+        calednarListDataFromServer?.forEach((item: any) => {
+          if (day.stringFormat == item.scheduleday) {
+            day.option.push({
+              id: item.id,
+              content: item.content,
+              phonenumber: item.phonenumber,
+              scheduleday: item.scheduleday,
+              userid: item.userid,
+              createdday: item.createdday,
+            });
+          }
+        });
       return day;
     });
     setCalendarViewArray([...reArray]);

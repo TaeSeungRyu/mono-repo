@@ -4,6 +4,7 @@ export class CommonResponse {
   ok: boolean = true;
   data: Record<string, any> = {};
   details: string = "";
+  success: boolean = false;
 
   constructor(arg: Record<string, any>) {
     if (arg.changes) {
@@ -28,6 +29,9 @@ export class CommonResponse {
     }
     if (arg.details) {
       this.details = arg.details;
+    }
+    if (arg.success != undefined) {
+      this.success = arg.success;
     }
   }
 }

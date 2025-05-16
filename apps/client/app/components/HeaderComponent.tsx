@@ -24,6 +24,12 @@ const Header = () => {
             >
               calendar
             </Link>
+            <Link
+              href="/user"
+              className="text-gray-700 hover:text-blue-600 transition"
+            >
+              user
+            </Link>
           </nav>
         </div>
       </div>

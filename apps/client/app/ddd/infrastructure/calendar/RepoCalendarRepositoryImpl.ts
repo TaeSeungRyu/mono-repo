@@ -18,7 +18,9 @@ export class RepoCalendarRepositoryImpl implements CalendarRepository {
     return new Promise(async (resolve, reject) => {
       if (meResult.ok) {
         const { result } = await meResult.json();
-        resolve(new CommonResponse({ data: result.data, sucess: true }));
+        resolve(
+          new CommonResponse({ data: result.data, success: result.success }),
+        );
       } else {
         reject(new Error("DB Insert Error"));
       }
@@ -35,7 +37,7 @@ export class RepoCalendarRepositoryImpl implements CalendarRepository {
     return new Promise(async (resolve, reject) => {
       if (meResult.ok) {
         const { data } = await meResult.json();
-        resolve(new CommonResponse({ data, sucess: true }));
+        resolve(new CommonResponse({ data, success: meResult.success }));
       } else {
         reject(new Error("DB Insert Error"));
       }
@@ -52,7 +54,7 @@ export class RepoCalendarRepositoryImpl implements CalendarRepository {
     return new Promise(async (resolve, reject) => {
       if (meResult.ok) {
         const { data } = await meResult.json();
-        resolve(new CommonResponse({ data, sucess: true }));
+        resolve(new CommonResponse({ data, success: meResult.success }));
       } else {
         reject(new Error("DB Insert Error"));
       }
@@ -68,7 +70,7 @@ export class RepoCalendarRepositoryImpl implements CalendarRepository {
     return new Promise(async (resolve, reject) => {
       if (meResult.ok) {
         const { data } = await meResult.json();
-        resolve(new CommonResponse({ data, sucess: true }));
+        resolve(new CommonResponse({ data, success: meResult.success }));
       } else {
         reject(new Error("DB Insert Error"));
       }

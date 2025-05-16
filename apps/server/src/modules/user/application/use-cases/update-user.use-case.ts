@@ -6,30 +6,38 @@ import { Request } from 'express';
 import { Injectable } from '@nestjs/common';
 import { User } from '../../domain/user.entity';
 import { RedisService } from 'src/redis/redis.service';
+import { UserDto } from '../../domain/user.dto';
 
 @Injectable()
-export class UpdateUserInfoUseCase implements CommonUseCase<User> {
+export class UpdateUserInfoUseCase implements CommonUseCase<UserDto> {
   constructor(
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
     private readonly redisService: RedisService,
   ) {}
 
-  async execute(body: User): Promise<ResponseDto> {
+  async execute(body: UserDto): Promise<ResponseDto> {
     const user = await this.userRepo.findOne({
       where: {
         id: body.id,
+        password: body.oldPassword,
       },
     });
-    if (user) {
+    if (user && body.id) {
       const { id, ...rest } = body;
+
       // null 또는 undefined가 아닌 값만 필터링
       const updateData = Object.fromEntries(
         Object.entries(rest).filter(
           ([, value]) => value !== null && value !== undefined,
         ),
       );
+      if (body.newPassword) {
+        updateData['password'] = body.newPassword;
+      }
       delete updateData['username'];
+      delete updateData['oldPassword'];
+      delete updateData['newPassword'];
       await this.userRepo.update(id, updateData);
       await this.redisService.set(
         `${user.username}_info`,

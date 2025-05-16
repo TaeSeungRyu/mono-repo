@@ -26,7 +26,7 @@ export class UserController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('update-info')
-  public async updateInfo(@Body() body: User) {
+  public async updateInfo(@Body() body: UserDto) {
     return await this.service.updateUserInfo(body);
   }
 

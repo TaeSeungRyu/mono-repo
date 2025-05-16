@@ -6,6 +6,7 @@ type InputFieldProps = {
   type?: string;
   placeholder?: string;
   value: string;
+  readonly?: boolean;
   onChange: (e: any) => void;
   className?: string;
 };
@@ -15,6 +16,7 @@ const InputField: React.FC<InputFieldProps> = ({
   type = "text",
   placeholder,
   value,
+  readonly = false,
   onChange,
   className = "",
 }) => {
@@ -26,6 +28,7 @@ const InputField: React.FC<InputFieldProps> = ({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
+          readOnly={readonly}
           className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none text-[#fff]"
         />
       ) : (
@@ -34,6 +37,7 @@ const InputField: React.FC<InputFieldProps> = ({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
+          readOnly={readonly}
           className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-[#fff]"
           autoComplete="off"
         />

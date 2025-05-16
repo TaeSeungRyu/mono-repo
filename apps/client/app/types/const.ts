@@ -17,6 +17,10 @@ export enum API {
   CALENDAR_UPDATE = `${proxy_pre_name}/calendar/update`,
   CALENDAR_DELETE = `${proxy_pre_name}/calendar/delete`,
 
+  USERLIST = `${proxy_pre_name}/user/find-paging`,
+  USERUPDATE = `${proxy_pre_name}/user/update-info`,
+  USERDELETE = `${proxy_pre_name}/user/delete`,
+
   LOCAL_REFRESH = `${client_api_pre_name}/auth/refresh`,
   DIRECT_SERVER_MYINFO = "/user/my-info",
   DIRECT_SERVER_SIGNIN = "/auth/login",
