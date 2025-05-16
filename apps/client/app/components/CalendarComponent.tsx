@@ -14,7 +14,12 @@ const queryKey = "calendarList";
 
 const CalendarComponent = () => {
   const queryClient = useQueryClient();
-  const [calendarArray, setCalendarData] = useState<Array<calendarType>>([]);
+  const [innerCalendarDataArray, setInnerCalendarDataArray] = useState<
+    Array<calendarType>
+  >([]);
+  const [calendarViewArray, setCalendarViewArray] = useState<
+    Array<calendarType>
+  >([]);
   const [currentDate, setCurrentDate] = useState<Dayjs>(dayjs());
   const [modalTitle, setModalTitle] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
@@ -25,18 +30,8 @@ const CalendarComponent = () => {
   const [calendarUpdateId, setCalendarUpdateId] = useState<string | null>(null);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [calendarInfo, setCalendarInfo] = useState<any>(null);
-
-  const buildCalendarDate = async (day: Dayjs = dayjs()) => {
-    return new Promise((resolve) => {
-      const newArray = calculateDay(day, (dayArray: any) => {});
-      const _currentDayInMonth = newArray.find(
-        (day: calendarType) => day.type == "current",
-      );
-      setCalendarData([...newArray]);
-      setCurrentDate(_currentDayInMonth?.date || dayjs());
-      resolve(true);
-    });
-  };
+  const [startDay, setStartDay] = useState<string>("");
+  const [endDay, setEndDay] = useState<string>("");
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/[^0-9]/g, "").slice(0, 11); // 숫자만, 최대 11자리
@@ -54,9 +49,13 @@ const CalendarComponent = () => {
       direction === "left"
         ? currentDate.subtract(1, "month").startOf("month")
         : currentDate.add(1, "month").startOf("month");
-    buildCalendarDate(newDate).then(() => {
-      refetch();
-    });
+    setCurrentDate(newDate);
+    initData(newDate);
+  };
+  const handleYearPicker = (newDate: Dayjs) => {
+    setCurrentDate(newDate);
+    setShowYearPicker(false);
+    initData(newDate);
   };
 
   const runModal = (day: calendarType) => {
@@ -90,53 +89,49 @@ const CalendarComponent = () => {
     setShowYearPicker(arg);
   };
 
-  //데이터 CURD 부분 -----
   const {
     data: calednarListDataFromServer = [],
     refetch,
     isLoading,
+    isSuccess,
   } = useQuery({
-    queryKey: [queryKey],
-    queryFn: async () => {
+    queryKey: [queryKey, startDay, endDay],
+    queryFn: async ({ queryKey }) => {
+      const [_, startDay, endDay] = queryKey;
       const { data }: any = await useCalendarService.selectByScheduleday(
-        calendarArray[0].stringFormat,
-        calendarArray[calendarArray.length - 1].stringFormat,
+        startDay,
+        endDay,
       );
       return data;
     },
-    gcTime: 0,
-    staleTime: 1000,
-    refetchOnMount: true,
-    enabled: false,
+    enabled: true,
   });
 
-  useEffect(() => {
-    buildCalendarDate(currentDate);
-  }, []);
-
-  //리팩토링중 -----------------
-  const [tmpCalendarArray, setTmpCalendarArray] = useState<Array<calendarType>>(
-    [],
-  );
-  const [startDay, setStartDay] = useState<string>("");
-  const [endDay, setEndDay] = useState<string>("");
-  const refectorying = () => {
-    const days = calculateDay(currentDate, (dayArray: any) => {});
-    setStartDay(
-      days[0].stringFormat || dayjs().startOf("month").format("YYYY-MM-DD"),
-    );
-    setEndDay(
-      days[days.length - 1].stringFormat ||
-        dayjs().endOf("month").format("YYYY-MM-DD"),
-    );
-    setTmpCalendarArray(days);
-    refetch();
+  //날짜 계산 및 초기화, 임시 데이터를 넣어준 뒤 fetch를 통해 서버에서 데이터와 결합!
+  const initData = (arg?: Dayjs) => {
+    const days = calculateDay(arg || currentDate);
+    setStartDay(days[0].stringFormat);
+    setEndDay(days[days.length - 1].stringFormat);
+    setInnerCalendarDataArray(days);
   };
 
+  // 초기화
   useEffect(() => {
-    const reArray = tmpCalendarArray.map((day: calendarType) => {
+    initData();
+  }, []);
+
+  // 날짜 변경 시(startDay, endDay 값이 변할 때 refetch를 통해 데이터 빌드)
+  useEffect(() => {
+    if (!startDay || !endDay) return;
+    refetch(); // enabled: false 덕분에 수동으로 실행
+  }, [startDay, endDay]);
+
+  // 서버에서 받아온 데이터로 innerCalendarDataArray를 업데이트
+  useEffect(() => {
+    if (!isSuccess) return;
+    const reArray = innerCalendarDataArray.map((day: calendarType) => {
       day.option = [];
-      calednarListDataFromServer.forEach((item: any) => {
+      calednarListDataFromServer?.forEach((item: any) => {
         if (day.stringFormat == item.scheduleday) {
           day.option.push({
             id: item.id,
@@ -150,41 +145,53 @@ const CalendarComponent = () => {
       });
       return day;
     });
-    setCalendarData([...reArray]);
+    setCalendarViewArray([...reArray]);
   }, [calednarListDataFromServer]);
-  //리팩토링중 -----------------
 
-  //TODO : 이걸 리팩토링 하려면,
-  //1. 먼저 조회용 start, end 날짜를 선언 해야 합니다.
-  //2. 그 날짜를 기준으로 데이터를 조회 합니다.
-  //3. 데이터가 있든 없든지 간에 이때 배열을 생성하여 줍니다.
-  //4. 그 배열을 기준으로 api 서버에서 가져온 데이터를 넣어 줍니다.
-  //5. 그 배열을 기준으로 화면에 보여줍니다.(setCalendarData)
-  //###### 이거 해결 안되면 캐싱 안되어 계속 서버에 요청함!(사실 리스트 데이터라서 캐싱이 필요 없음) ######
+  const insertMutation = useMutation({
+    mutationFn: async () => {
+      await useCalendarService.insertData({
+        phonenumber: phoneNumber,
+        content,
+        scheduleday: selectedDate?.format("YYYY-MM-DD"),
+      });
+    },
+    onSuccess: () => {
+      setPhoneNumber(""); // 입력 필드 초기화
+      setContent("");
+      setIsOpen(false);
+      queryClient.invalidateQueries({ queryKey: [queryKey, startDay, endDay] });
+    },
+  });
 
-  useEffect(() => {
-    if (calendarArray.length > 0 && calednarListDataFromServer.length > 0) {
-      const reArray: Array<calendarType> = calendarArray.map(
-        (day: calendarType) => {
-          day.option = [];
-          calednarListDataFromServer.forEach((item: any) => {
-            if (day.stringFormat == item.scheduleday) {
-              day.option.push({
-                id: item.id,
-                content: item.content,
-                phonenumber: item.phonenumber,
-                scheduleday: item.scheduleday,
-                userid: item.userid,
-                createdday: item.createdday,
-              });
-            }
-          });
-          return day;
-        },
-      );
-      setCalendarData([...reArray]);
-    }
-  }, [calednarListDataFromServer]);
+  const updateMutation = useMutation({
+    mutationFn: async () => {
+      await useCalendarService.updateData({
+        id: calendarUpdateId,
+        phonenumber: phoneNumber,
+        content,
+        scheduleday: selectedDate?.format("YYYY-MM-DD"),
+      });
+    },
+    onSuccess: () => {
+      setPhoneNumber(""); // 입력 필드 초기화
+      setContent("");
+      setIsOpen(false);
+      queryClient.invalidateQueries({ queryKey: [queryKey, startDay, endDay] });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      await useCalendarService.deleteData(`${calendarUpdateId}`);
+    },
+    onSuccess: () => {
+      setPhoneNumber(""); // 입력 필드 초기화
+      setContent("");
+      setIsOpen(false);
+      queryClient.invalidateQueries({ queryKey: [queryKey, startDay, endDay] });
+    },
+  });
 
   const requestAlter = () => {
     if (!phoneNumber || !content) {
@@ -203,51 +210,6 @@ const CalendarComponent = () => {
     if (!confirm("정말로 삭제 하시겠습니까?")) return;
     deleteMutation.mutate();
   };
-
-  const insertMutation = useMutation({
-    mutationFn: async () => {
-      await useCalendarService.insertData({
-        phonenumber: phoneNumber,
-        content,
-        scheduleday: selectedDate?.format("YYYY-MM-DD"),
-      });
-    },
-    onSuccess: () => {
-      setPhoneNumber(""); // 입력 필드 초기화
-      setContent("");
-      setIsOpen(false);
-      queryClient.invalidateQueries({ queryKey: [queryKey] });
-    },
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: async () => {
-      await useCalendarService.updateData({
-        id: calendarUpdateId,
-        phonenumber: phoneNumber,
-        content,
-        scheduleday: selectedDate?.format("YYYY-MM-DD"),
-      });
-    },
-    onSuccess: () => {
-      setPhoneNumber(""); // 입력 필드 초기화
-      setContent("");
-      setIsOpen(false);
-      queryClient.invalidateQueries({ queryKey: [queryKey] });
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async () => {
-      await useCalendarService.deleteData(`${calendarUpdateId}`);
-    },
-    onSuccess: () => {
-      setPhoneNumber(""); // 입력 필드 초기화
-      setContent("");
-      setIsOpen(false);
-      queryClient.invalidateQueries({ queryKey: [queryKey] });
-    },
-  });
 
   return (
     <>
@@ -347,7 +309,7 @@ const CalendarComponent = () => {
         <div className="flex justify-center items-center relative">
           <YearPickerModal
             currentDate={currentDate}
-            onSelectYear={(newDate) => buildCalendarDate(newDate)}
+            onSelectYear={(newDate) => handleYearPicker(newDate)}
             onClose={() => runYearPicker(false)}
             isOpen={showYearPicker}
           />
@@ -389,12 +351,12 @@ const CalendarComponent = () => {
             })}
           </div>
           <div className="grid grid-cols-7">
-            {calendarArray.map((day: calendarType, index: number) => {
+            {calendarViewArray.map((day: calendarType, index: number) => {
               const isToday = day.today;
               const isCurrentMonth = day.type == "current";
               const isLastRow =
                 Math.floor(index / 7) ===
-                Math.floor((calendarArray.length - 1) / 7);
+                Math.floor((calendarViewArray.length - 1) / 7);
               const isFirstRow = Math.floor(index % 7) === 0;
               const isFirstColumn = index < 7;
               return (
