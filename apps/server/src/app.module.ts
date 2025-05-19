@@ -13,6 +13,7 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { Calendar } from './modules/calendar/domain/calendar.entity';
 import { CalendarModule } from './modules/calendar/calendar.module';
+import { Auth } from './modules/user/domain/auth.entity';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { CalendarModule } from './modules/calendar/calendar.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [User, Board, Calendar],
+      entities: [User, Auth, Board, Calendar],
       synchronize: false, // dev용 자동 스키마 sync
     }),
     AuthModule,

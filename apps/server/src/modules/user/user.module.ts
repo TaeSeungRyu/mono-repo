@@ -11,12 +11,15 @@ import { UpdateUserInfoUseCase } from './application/use-cases/update-user.use-c
 import { UserController } from './infrastructure/user.controller';
 import { FindUserWithPagingUseCase } from './application/use-cases/find-paging.use-case';
 import { DeleteUserInfoUseCase } from './application/use-cases/delete-user.use-case';
+import { Auth } from './domain/auth.entity';
+import { FindAuthUseCase } from './application/use-cases/find-auth.use-case';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([User, Auth])],
   providers: [
     RedisService,
     UserService,
+    FindAuthUseCase,
     FindUserByIdPasswordUseCase,
     FindUserByIdUseCase,
     SignUpUseCase,

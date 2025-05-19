@@ -6,6 +6,9 @@ import { Request } from 'express';
 import { Injectable } from '@nestjs/common';
 import { User } from '../../domain/user.entity';
 import { RedisService } from 'src/redis/redis.service';
+import { FindAuthUseCase } from './find-auth.use-case';
+import { dataToAuthArray, stringToJson } from '../util/use-util';
+import { Auth } from '../../domain/auth.entity';
 
 @Injectable()
 export class FindUserByIdUseCase implements CommonUseCase<Request> {
@@ -13,22 +16,13 @@ export class FindUserByIdUseCase implements CommonUseCase<Request> {
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
     private readonly redisService: RedisService,
+    private readonly findAuthUseCase: FindAuthUseCase,
   ) {}
-
-  private stringToJson(arg: string | null): unknown {
-    if (!arg) {
-      return null; // 또는 적절한 기본값을 반환
-    }
-    try {
-      return JSON.parse(arg);
-    } catch (error) {
-      console.error('JSON parsing error:', error);
-      return null; // 또는 적절한 기본값을 반환
-    }
-  }
 
   async execute(req: Request): Promise<ResponseDto> {
     if (req?.user && req?.user?.username) {
+      const { result } = await this.findAuthUseCase.execute();
+      const auths: Auth[] = dataToAuthArray(result);
       const username = req?.user?.username;
       let user = await this.redisService.get(`${username}_info`);
       if (!user) {
@@ -38,6 +32,12 @@ export class FindUserByIdUseCase implements CommonUseCase<Request> {
           },
         });
         if (userInfo) {
+          userInfo.authCodes = userInfo.auths
+            .map((key: string) => {
+              const auth = auths.find((auth) => auth.authcode === key);
+              return auth;
+            })
+            .filter((auth) => auth !== undefined);
           await this.redisService.set(
             `${username}_info`,
             JSON.stringify(userInfo),
@@ -46,8 +46,7 @@ export class FindUserByIdUseCase implements CommonUseCase<Request> {
         }
         user = await this.redisService.get(`${username}_info`);
       }
-
-      const data = this.stringToJson(user);
+      const data = stringToJson(user);
       return new ResponseDto(
         { success: true, data: data },
         'success',

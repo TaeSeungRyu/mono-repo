@@ -1,4 +1,5 @@
 // src/types/express.d.ts
+import { Auth } from 'src/modules/user/domain/auth.entity.js';
 import { JwtPayload } from '../auth/jwt-payload.interface.ts'; // 직접 정의한 인터페이스
 
 declare global {
@@ -9,7 +10,7 @@ declare global {
       email: string; // 사용자 이메일
       iat: number; // 발급 시간
       exp: number; // 만료 시간
-      roles?: string[]; // 사용자 역할
+      roles?: Auth[]; // 사용자 역할
     }
 
     interface Request {

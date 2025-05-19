@@ -10,7 +10,6 @@ export class RefreshTokenUseCase implements CommonUseCase<Request> {
   constructor(private jwtService: JwtService) {}
 
   async execute(req: Request): Promise<ResponseDto> {
-    console.log(req.cookies[JWTCode.refreshToken]);
     if (!req.cookies[JWTCode.refreshToken]) {
       return new Promise((resolve) => {
         resolve(
@@ -29,7 +28,10 @@ export class RefreshTokenUseCase implements CommonUseCase<Request> {
     const refreshToken = req.cookies[JWTCode.refreshToken] as string;
     try {
       const payload: JwtPayload = this.jwtService.decode(refreshToken);
-      const accessToken = this.jwtService.sign({ username: payload.username });
+      const accessToken = this.jwtService.sign({
+        username: payload.username,
+        roles: payload.roles,
+      });
       return new Promise((resolve) => {
         resolve(
           new ResponseDto(

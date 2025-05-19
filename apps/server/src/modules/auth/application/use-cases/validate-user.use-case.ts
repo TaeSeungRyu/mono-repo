@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/modules/user/domain/user.entity';
 import { JWTCode } from '../../domain/jwt-payload.interface';
 import { RedisService } from 'src/redis/redis.service';
+import { Auth } from 'src/modules/user/domain/auth.entity';
 
 @Injectable()
 export class ValidateUserUseCase
@@ -49,9 +50,16 @@ export class ValidateUserUseCase
         );
       });
     }
-    const accessToken = this.jwtService.sign({ username, roles: ['admin'] });
+
+    const roles: Auth[] = [];
+    if (user.result?.data instanceof User) {
+      if (user.result?.data.authCodes) {
+        roles.push(...user.result.data.authCodes);
+      }
+    }
+    const accessToken = this.jwtService.sign({ username, roles });
     const refreshToken = this.jwtService.sign(
-      { username, roles: ['admin'] },
+      { username, roles },
       { expiresIn: '1d' },
     );
 

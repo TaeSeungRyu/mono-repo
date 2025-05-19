@@ -1,21 +1,23 @@
 -- psql -U dev -d myapp
 
--- 1. 테이블이 없을 때만 생성
+-- 1. 사용자
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(), 
     username VARCHAR(100),
     name VARCHAR(100),
     password VARCHAR(100),
-    lastLogin VARCHAR(100)
+    lastLogin VARCHAR(100),
+    auths text[]
 );
 
--- 2. 특정 값이 없을 때만 삽입
-INSERT INTO users (username, name, password, lastLogin)
-SELECT 'admin', 'administartor', 'admin1234', '2025-05-01 00:00:00'
+-- 값이 없을 때만 삽입
+INSERT INTO users (username, name, password, lastLogin, auths)
+SELECT 'admin', 'administartor', 'admin1234', '2025-05-01 00:00:00', ARRAY['admin'] 
 WHERE NOT EXISTS (
   SELECT 1 FROM users WHERE username = 'admin'
 );
 
+-- 2. 게시판
 CREATE TABLE IF NOT EXISTS board (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(), 
     title VARCHAR(100),
@@ -24,6 +26,7 @@ CREATE TABLE IF NOT EXISTS board (
     createdDay VARCHAR(100)
 );
 
+-- 3. 게시판 파일
 CREATE TABLE IF NOT EXISTS boardFile (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     boardId UUID,
@@ -33,7 +36,7 @@ CREATE TABLE IF NOT EXISTS boardFile (
     createdDay VARCHAR(100)
 );
 
-
+-- 4. 달력
 CREATE TABLE IF NOT EXISTS calendar (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(), 
     phoneNumber VARCHAR(100),
@@ -41,4 +44,25 @@ CREATE TABLE IF NOT EXISTS calendar (
     userid VARCHAR(100),
     createdDay VARCHAR(100)
     scheduleday VARCHAR(24)
+);
+
+-- 5. 달력
+CREATE TABLE IF NOT EXISTS auth (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(), 
+    authCode VARCHAR(100),
+    authName VARCHAR(100),
+    createdDay VARCHAR(100)
+);
+
+-- 값이 없을 때만 삽입
+INSERT INTO auth (authCode, authName, createdDay)
+SELECT 'admin', 'admin', '2025-05-01 00:00:00'
+WHERE NOT EXISTS (
+  SELECT 1 FROM auth WHERE authCode = 'admin'
+);
+
+INSERT INTO auth (authCode, authName, createdDay)
+SELECT 'user', 'user', '2025-05-01 00:00:00'
+WHERE NOT EXISTS (
+  SELECT 1 FROM auth WHERE authCode = 'user'
 );
