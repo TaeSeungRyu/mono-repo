@@ -188,7 +188,7 @@ const UserManageComponent = () => {
   });
 
   return (
-    <div className="w-[50%] mx-auto p-6 bg-white shadow-lg rounded-2xl">
+    <div className="w-[50%] mx-auto p-6 bg-white shadow-lg rounded-2xl dark:bg-gray-800 dark:text-white">
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="사용자">
         <form className="flex flex-col space-y-4">
           <InputField

@@ -13,6 +13,7 @@ import { Request } from 'express';
 import { UserService } from '../application/service/user.service';
 import { User } from '../domain/user.entity';
 import { UserDto } from '../domain/user.dto';
+import { Roles } from 'src/modules/auth/application/services/roles.decorator';
 
 @Controller('user')
 export class UserController {
@@ -35,7 +36,7 @@ export class UserController {
     return await this.service.signUp(body);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('super', 'admin')
   @Get('find-paging')
   public async findPaging(@Query() req: UserDto) {
     return await this.service.findUserWithPaging(req);

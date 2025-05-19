@@ -121,11 +121,11 @@ const CalendarComponent = () => {
     initData();
   }, []);
 
-  // 날짜 변경 시(startDay, endDay 값이 변할 때 refetch를 통해 데이터 빌드)
-  useEffect(() => {
-    if (!startDay || !endDay) return;
-    refetch(); // enabled: false 덕분에 수동으로 실행
-  }, [startDay, endDay]);
+  //// 날짜 변경 시(startDay, endDay 값이 변할 때 refetch를 통해 데이터 빌드)
+  // useEffect(() => {
+  //   if (!startDay || !endDay) return;
+  //   //refetch(); // enabled: false 덕분에 수동으로 실행
+  // }, [startDay, endDay]);
 
   // 서버에서 받아온 데이터로 innerCalendarDataArray를 업데이트
   useEffect(() => {
@@ -307,7 +307,7 @@ const CalendarComponent = () => {
           <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
         </div>
       )}
-      <div className="w-full bg-white py-3 px-8">
+      <div className="w-full bg-white py-3 px-8 dark:bg-gray-800 dark:text-white">
         <div className="flex justify-center items-center relative">
           <YearPickerModal
             currentDate={currentDate}
@@ -323,7 +323,7 @@ const CalendarComponent = () => {
               <ArrowLeft></ArrowLeft>
             </div>
             <div
-              className="text-center text-2xl font-bold text-gray-800 py-4 cursor-pointer"
+              className="text-center text-2xl font-bold text-gray-800 py-4 cursor-pointer dark:text-white"
               onClick={() => runYearPicker(true)}
             >
               {currentDate.format("YYYY년 MM월")}
@@ -337,7 +337,7 @@ const CalendarComponent = () => {
           </div>
         </div>
         <div className="w-full border rounded-2xl shadow-md">
-          <div className="grid grid-cols-7 text-center font-semibold text-gray-700">
+          <div className="grid grid-cols-7 text-center font-semibold text-gray-700 dark:text-white">
             {DAT_OF_WEEK_KOR.map((day: string, index: number) => {
               const isLastColumn = index < 7 && index != 0;
               return (
@@ -376,7 +376,7 @@ const CalendarComponent = () => {
                 >
                   <div className="flex items-center justify-between">
                     <div
-                      className="pl-1 cursor-pointer hover:text-blue-500 "
+                      className="pl-1 cursor-pointer hover:text-blue-500  dark:text-gray-100"
                       onClick={() => runInfoModal(day)}
                     >
                       {day.dayString}
@@ -395,7 +395,7 @@ const CalendarComponent = () => {
                         return (
                           <div
                             key={index}
-                            className={`text-sm text-gray-600 w-[90%] text-right truncate cursor-pointer hover:text-blue-500 ${!isCurrentMonth ? "text-gray-200" : "text-gray-800"}`}
+                            className={`text-sm text-gray-600 w-[90%] text-right truncate cursor-pointer  dark:text-gray-600 hover:text-blue-500 ${!isCurrentMonth ? "text-gray-200 " : "text-gray-800"}`}
                             onClick={() => runModalForUpdate(day, item)}
                           >{`${item.phonenumber} : ${item.content}`}</div>
                         );

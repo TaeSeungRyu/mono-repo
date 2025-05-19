@@ -49,9 +49,9 @@ export class ValidateUserUseCase
         );
       });
     }
-    const accessToken = this.jwtService.sign({ username });
+    const accessToken = this.jwtService.sign({ username, roles: ['admin'] });
     const refreshToken = this.jwtService.sign(
-      { username },
+      { username, roles: ['admin'] },
       { expiresIn: '1d' },
     );
 
