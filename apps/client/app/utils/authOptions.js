@@ -1,14 +1,8 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import { API } from "../types/const";
-//import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions = {
   providers: [
-    // OAuth 인증 생플
-    // GoogleProvider({
-    //   clientId: process.env.GOOGLE_ID,
-    //   clientSecret: process.env.GOOGLE_SECRET,
-    // }),
     // 로그인 페이지에서 사용자 이름과 비밀번호를 입력하여 로그인하는 방법을 제공.
     CredentialsProvider({
       name: "Credentials",
@@ -38,6 +32,7 @@ export const authOptions = {
             id: me.result.data.id,
             username: me.result.data.username,
             name: me.result.data.name,
+            auths: me.result.data.auths,
           };
         } else {
           const requestResult = await fetch(
@@ -72,12 +67,32 @@ export const authOptions = {
               id: me.result.data.id,
               username: me.result.data.username,
               name: me.result.data.name,
+              auths: me.result.data.auths,
             };
           }
         }
-
         throw new Error("Invalid username or password");
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.username = user.username; //사용자 정의 필드 추가
+        token.serverAccessToken = user.serverAccessToken; //사용자 정의 필드 추가
+        token.serverRefreshToken = user.serverRefreshToken; //사용자 정의 필드 추가
+        token.auths = user.auths; //사용자 정의 필드 추가
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user.username = token.username; //사용자 정의 필드 추가
+        session.user.serverAccessToken = token.serverAccessToken; //사용자 정의 필드 추가
+        session.user.serverRefreshToken = token.serverRefreshToken; //사용자 정의 필드 추가
+        session.user.auths = token.auths; //사용자 정의 필드 추가
+      }
+      return session;
+    },
+  },
 };

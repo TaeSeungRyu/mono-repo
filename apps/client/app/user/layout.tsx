@@ -10,13 +10,14 @@ export default async function RootLayout({
 }>) {
   //로그인 여부 확인
   const session = await getServerSession(authOptions);
-  if (!session) {
-    console.log(session);
+  const isSuperUser =
+    session?.user?.auths && session?.user?.auths?.includes("admin");
+  if (!session || !isSuperUser) {
     redirect("/error");
   }
   return (
     <>
-      <Header></Header>
+      <Header session={session}></Header>
       {children}
     </>
   );

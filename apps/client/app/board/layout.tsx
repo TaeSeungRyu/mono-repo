@@ -11,12 +11,12 @@ export default async function RootLayout({
   //로그인 여부 확인
   const session = await getServerSession(authOptions);
   if (!session) {
-    console.log(session);
     redirect("/error");
   }
+  console.log(session);
   return (
     <>
-      <Header></Header>
+      <Header session={session}></Header>
       {children}
     </>
   );

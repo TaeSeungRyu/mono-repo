@@ -20,24 +20,6 @@ const handler = NextAuth({
       },
     },
   },
-  providers: authOptions.providers,
-  callbacks: {
-    async jwt({ token, user, session, trigger }): Promise<JWT> {
-      if (user) {
-        token.username = user.username; //사용자 정의 필드 추가
-        token.serverAccessToken = user.serverAccessToken; //사용자 정의 필드 추가
-        token.serverRefreshToken = user.serverRefreshToken; //사용자 정의 필드 추가
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (token) {
-        session.user.username = token.username; //사용자 정의 필드 추가
-        session.user.serverAccessToken = token.serverAccessToken; //사용자 정의 필드 추가
-        session.user.serverRefreshToken = token.serverRefreshToken; //사용자 정의 필드 추가
-      }
-      return session;
-    },
-  },
+  ...authOptions,
 });
 export { handler as GET, handler as POST };

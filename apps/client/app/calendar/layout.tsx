@@ -17,7 +17,7 @@ export default async function RootLayout({
   }
   return (
     <>
-      <Header></Header>
+      <Header session={session}></Header>
       {children}
     </>
   );

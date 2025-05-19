@@ -6,7 +6,7 @@ declare module "next-auth" {
   interface Session {
     user: {
       /** The user's role. */
-      role: string;
+      auths: Array<string>;
       accessToken: string;
       username: string;
       serverAccessToken: string;
@@ -14,7 +14,7 @@ declare module "next-auth" {
     } & DefaultSession["user"];
   }
   interface User {
-    role: string;
+    auths: Array<string>;
     accessToken: string;
     username: string;
     serverAccessToken: string;
@@ -25,7 +25,7 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT extends DefaultJWT {
     /** The user's role */
-    role: string;
+    auths: Array<string>;
     accessToken: string;
     username: string;
     user: Users | null;
