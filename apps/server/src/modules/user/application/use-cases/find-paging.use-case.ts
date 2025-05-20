@@ -30,7 +30,13 @@ export class FindUserWithPagingUseCase implements CommonUseCase<UserDto> {
     query
       .skip((page - 1) * limit)
       .take(limit)
-      .select(['user.id', 'user.username', 'user.name', 'user.lastlogin'])
+      .select([
+        'user.id',
+        'user.username',
+        'user.name',
+        'user.lastlogin',
+        'user.auths',
+      ])
       .orderBy('user.id', 'DESC');
     const [data, total] = await query.getManyAndCount();
     const totalPage = Math.ceil(total / limit);

@@ -19,6 +19,7 @@ export class UserRepositoryImpl implements UserRepository {
   async insertUser(
     username: string,
     password: string,
+    authCodes: string,
     name: string | null,
   ): Promise<any> {
     const insertResult = await fetcher(API.SIGNUP, {
@@ -26,7 +27,7 @@ export class UserRepositoryImpl implements UserRepository {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username, password, name }),
+      body: JSON.stringify({ username, password, name, auths: authCodes }),
     });
     return new Promise(async (resolve, reject) => {
       if (insertResult.ok) {
@@ -99,6 +100,7 @@ export class UserRepositoryImpl implements UserRepository {
     id: string,
     oldPassword: string,
     newPassword: string,
+    authCodes: string,
     name: string | null,
   ): Promise<any> {
     const updateResult = await fetcher(API.USERUPDATE, {
@@ -106,7 +108,13 @@ export class UserRepositoryImpl implements UserRepository {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ id, oldPassword, newPassword, name }),
+      body: JSON.stringify({
+        id,
+        oldPassword,
+        newPassword,
+        name,
+        auths: authCodes,
+      }),
     });
     return new Promise(async (resolve, reject) => {
       if (updateResult.ok) {

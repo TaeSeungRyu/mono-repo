@@ -6,4 +6,6 @@ export class UserDto {
   limit?: number;
   oldPassword?: string;
   newPassword?: string;
+  password?: string;
+  auths?: string;
 }

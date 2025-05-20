@@ -5,22 +5,23 @@ import { ResponseDto } from 'src/common/common.dto';
 import { Request } from 'express';
 import { Injectable } from '@nestjs/common';
 import { User } from '../../domain/user.entity';
+import { UserDto } from '../../domain/user.dto';
 
 @Injectable()
-export class SignUpUseCase implements CommonUseCase<User> {
+export class SignUpUseCase implements CommonUseCase<UserDto> {
   constructor(
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
   ) {}
 
-  async execute(body: User): Promise<ResponseDto> {
-    const { username, password, name } = body;
+  async execute(body: UserDto): Promise<ResponseDto> {
+    const { username, password, auths, name } = body;
     const user = await this.userRepo.findOne({
       where: {
         username,
       },
     });
-    if (user) {
+    if (user || !username || !password) {
       return new ResponseDto(
         { success: false },
         'error',
@@ -28,9 +29,10 @@ export class SignUpUseCase implements CommonUseCase<User> {
       );
     } else {
       const newUser = this.userRepo.create({
-        username,
-        password,
-        name,
+        username: username,
+        password: password,
+        auths: [auths || ''],
+        name: name || '',
       });
       await this.userRepo.save(newUser);
       return new ResponseDto({ success: true }, 'success', '사용자 등록 성공');

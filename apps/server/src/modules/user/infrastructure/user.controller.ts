@@ -11,7 +11,6 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { UserService } from '../application/service/user.service';
-import { User } from '../domain/user.entity';
 import { UserDto } from '../domain/user.dto';
 import { Roles } from 'src/modules/auth/application/services/roles.decorator';
 
@@ -32,7 +31,7 @@ export class UserController {
   }
 
   @Post('signup')
-  public async signUp(@Body() body: User) {
+  public async signUp(@Body() body: UserDto) {
     return await this.service.signUp(body);
   }
 

@@ -21,7 +21,7 @@ const SignupPageComponent = () => {
       return;
     }
     if (!confirm("회원가입 하시겠습니까?")) return;
-    const result = await useUserService.signUp(username, password, name); //나중에 응답 타입에 대한 정의는 필수!
+    const result = await useUserService.signUp(username, password, "", name); //나중에 응답 타입에 대한 정의는 필수!
     if (result.ok) {
       alert("회원가입이 완료되었습니다.");
     } else {

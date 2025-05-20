@@ -18,6 +18,7 @@ const UserManageComponent = () => {
   const [newPasswordConfirm, setNewPasswordConfirm] = useState("");
   const [isPasswordEqual, setIsPasswordEqual] = useState(true);
   const [myName, setMyName] = useState("");
+  const [authCode, setAuthCode] = useState("");
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const limit = 3;
@@ -25,7 +26,6 @@ const UserManageComponent = () => {
 
   const {
     data: userList = {},
-    refetch,
     isLoading,
     isSuccess,
   } = useQuery({
@@ -38,6 +38,24 @@ const UserManageComponent = () => {
         null,
         null,
       );
+      const authCodes = codeFromLayout.result.data;
+      data.data = data.data.map((user: any) => {
+        if (!user.auths) {
+          user.auths = [];
+        } else {
+          user.auths = user.auths.map((auth: any) => {
+            const authCode = authCodes.find(
+              (code: any) => code.authcode === auth,
+            );
+
+            return {
+              authcode: authCode ? authCode.authcode : "",
+              authname: authCode ? authCode.authname : "",
+            };
+          });
+        }
+        return user;
+      });
       return data;
     },
     placeholderData: (prev) => prev,
@@ -64,10 +82,12 @@ const UserManageComponent = () => {
 
   const runInfoModal = (user?: any) => {
     if (user) {
+      console.log("user.auths[0]?.authcode", user.auths[0]?.authcode);
       setMyName(user.name);
       setUsername(user.username);
       setUserUpdateId(user.id);
       setIsReadonly(true);
+      setAuthCode(user.auths[0]?.authcode || "");
     } else {
       setMyName("");
       setUsername("");
@@ -130,6 +150,7 @@ const UserManageComponent = () => {
         userUpdateId,
         oldPassword,
         newPassword,
+        authCode,
         myName,
       );
       return result;
@@ -171,7 +192,12 @@ const UserManageComponent = () => {
 
   const insertMutation = useMutation({
     mutationFn: async () => {
-      const result = await useUserService.signUp(username, newPassword, myName);
+      const result = await useUserService.signUp(
+        username,
+        newPassword,
+        authCode,
+        myName,
+      );
       return result;
     },
     onSuccess: (arg) => {
@@ -223,11 +249,13 @@ const UserManageComponent = () => {
               <select
                 className="border rounded p-2"
                 onChange={(e) => {
-                  console.log(e.target.value);
+                  setAuthCode(e.target.value);
                 }}
+                defaultValue={authCode}
               >
+                <option value="">권한 선택</option>
                 {codeFromLayout.result.data.map((option: any) => (
-                  <option key={option.authcode} value={option.authname}>
+                  <option key={option.authcode} value={option.authcode}>
                     {option.authname}
                   </option>
                 ))}
@@ -302,6 +330,12 @@ const UserManageComponent = () => {
             >
               <p className="font-semibold text-lg">{user.name}</p>
               <p className="text-sm text-gray-600">@{user.username}</p>
+              <p className="text-sm text-gray-600">
+                권한 :{" "}
+                {user.auths && user.auths.length > 0
+                  ? user.auths.map((a: any) => a.authname).join(", ")
+                  : "권한 없음"}
+              </p>
             </li>
           ))}
         </ul>

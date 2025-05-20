@@ -24,20 +24,22 @@ export class UpdateUserInfoUseCase implements CommonUseCase<UserDto> {
       },
     });
     if (user && body.id) {
-      const { id, ...rest } = body;
+      const { id, name, auths } = body;
 
       // null 또는 undefined가 아닌 값만 필터링
-      const updateData = Object.fromEntries(
-        Object.entries(rest).filter(
-          ([, value]) => value !== null && value !== undefined,
-        ),
-      );
+      // TODO : DTO를 엔티티로 변환하는 기능이 필요함!!!!!
+      const updateData = {
+        name,
+      };
       if (body.newPassword) {
         updateData['password'] = body.newPassword;
       }
-      delete updateData['username'];
-      delete updateData['oldPassword'];
-      delete updateData['newPassword'];
+      if (body.auths) {
+        updateData['auths'] = [auths];
+      } else {
+        updateData['auths'] = [];
+      }
+
       await this.userRepo.update(id, updateData);
       await this.redisService.set(
         `${user.username}_info`,

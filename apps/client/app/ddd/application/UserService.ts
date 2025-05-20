@@ -14,8 +14,13 @@ export class UserService {
   async signIn(username: string, password: string) {
     return this.userRepo.findOneUser(username, password);
   }
-  async signUp(username: string, password: string, name: string | null) {
-    return this.userRepo.insertUser(username, password, name);
+  async signUp(
+    username: string,
+    password: string,
+    authCodes: string,
+    name: string | null,
+  ) {
+    return this.userRepo.insertUser(username, password, authCodes, name);
   }
 
   async findMe() {
@@ -77,12 +82,14 @@ export class UserService {
     id: string,
     oldPassword: string,
     newPassword: string,
+    authCodes: string,
     name: string | null,
   ) {
     const data = await this.userRepo.updateUser(
       id,
       oldPassword,
       newPassword,
+      authCodes,
       name,
     );
     return data;

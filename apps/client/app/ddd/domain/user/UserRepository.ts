@@ -6,6 +6,7 @@ export interface UserRepository {
   insertUser(
     username: string,
     password: string,
+    authCodes: string,
     name: string | null,
   ): Promise<any>;
   findMe(): Promise<any>;
@@ -19,6 +20,7 @@ export interface UserRepository {
     id: string,
     oldPassword: string,
     newPassword: string,
+    authCodes: string,
     name: string | null,
   ): Promise<any>;
   deleteUser(id: string, oldPassword: string): Promise<any>;

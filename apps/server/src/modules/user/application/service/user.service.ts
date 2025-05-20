@@ -6,7 +6,6 @@ import { FindUserByIdUseCase } from '../use-cases/find-id.use-case';
 import { SignUpUseCase } from '../use-cases/sign-up.use-case';
 import { UpdateUserInfoUseCase } from '../use-cases/update-user.use-case';
 import { ResponseDto } from 'src/common/common.dto';
-import { User } from '../../domain/user.entity';
 import { FindUserWithPagingUseCase } from '../use-cases/find-paging.use-case';
 import { UserDto } from '../../domain/user.dto';
 import { DeleteUserInfoUseCase } from '../use-cases/delete-user.use-case';
@@ -60,7 +59,7 @@ export class UserService {
     return this.updateUserInfoUseCase.execute(body);
   }
 
-  async signUp(body: User): Promise<ResponseDto> {
+  async signUp(body: UserDto): Promise<ResponseDto> {
     return this.signUpUseCase.execute(body);
   }
 
