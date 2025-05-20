@@ -7,6 +7,7 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  console.error("글로벌 오류 발생", error);
   return (
     // global-error must include html and body tags
     <html>

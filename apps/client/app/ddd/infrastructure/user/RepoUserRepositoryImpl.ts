@@ -111,7 +111,6 @@ export class UserRepositoryImpl implements UserRepository {
     return new Promise(async (resolve, reject) => {
       if (updateResult.ok) {
         const { result } = await updateResult.json();
-        console.log("repository : ", result.success);
         resolve(
           new CommonResponse({ data: result.data, success: result.success }),
         );

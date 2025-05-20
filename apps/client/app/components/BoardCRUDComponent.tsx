@@ -28,6 +28,13 @@ const BoardCRUDComponent = () => {
   // ✅ 삽입 (useMutation 사용)
   const insertMutation = useMutation({
     mutationFn: async () => {
+      if (!title.trim() || !content.trim()) {
+        alert("제목 또는 내용을 입력하세요.");
+        throw new Error("제목 또는 내용을 입력하세요."); //에러를 발생해야 입력 전 상태를 기억함! 단순 return인 경우 초기화
+      }
+      if (!confirm("등록하시겠습니까?")) {
+        throw new Error("stop");
+      }
       await useBoardService.insertData({
         title,
         content,
@@ -44,6 +51,13 @@ const BoardCRUDComponent = () => {
   // ✅ 수정 (useMutation 사용)
   const updateMutation = useMutation({
     mutationFn: async (item: Board) => {
+      if (!title.trim() || !content.trim()) {
+        alert("제목 또는 내용을 입력하세요.");
+        return; //에러를 발생해야 입력 전 상태를 기억함! 단순 return인 경우 초기화
+      }
+      if (!confirm("수정하시겠습니까?")) {
+        throw new Error("stop");
+      }
       await useBoardService.updateData(item);
     },
     onMutate: () => {
@@ -67,6 +81,9 @@ const BoardCRUDComponent = () => {
   // ✅ 삭제 (useMutation 사용)
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
+      if (!confirm("삭제하시겠습니까?")) {
+        throw new Error("stop");
+      }
       await useBoardService.deleteData(id);
     },
     onSuccess: () => {

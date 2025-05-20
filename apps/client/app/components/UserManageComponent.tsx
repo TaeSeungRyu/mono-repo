@@ -129,7 +129,6 @@ const UserManageComponent = () => {
         newPassword,
         myName,
       );
-      console.log("result", result);
       return result;
     },
     onSuccess: (arg) => {

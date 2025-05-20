@@ -1,6 +1,5 @@
 import NextAuth, { Session } from "next-auth";
 import { authOptions } from "@/app/utils/authOptions";
-import { JWT } from "next-auth/jwt";
 
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,

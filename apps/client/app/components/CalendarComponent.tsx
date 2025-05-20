@@ -33,6 +33,11 @@ const CalendarComponent = () => {
   const [startDay, setStartDay] = useState<string>("");
   const [endDay, setEndDay] = useState<string>("");
 
+  const isValidPhoneNumber = (phoneNumber: string) => {
+    const regex = /^010-\d{3,4}-\d{4}$/;
+    return regex.test(phoneNumber);
+  };
+
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/[^0-9]/g, "").slice(0, 11); // 숫자만, 최대 11자리
     let formatted = raw;
@@ -91,7 +96,6 @@ const CalendarComponent = () => {
 
   const {
     data: calednarListDataFromServer = [],
-    refetch,
     isLoading,
     isSuccess,
   } = useQuery({
@@ -121,12 +125,6 @@ const CalendarComponent = () => {
     initData();
   }, []);
 
-  //// 날짜 변경 시(startDay, endDay 값이 변할 때 refetch를 통해 데이터 빌드)
-  // useEffect(() => {
-  //   if (!startDay || !endDay) return;
-  //   //refetch(); // enabled: false 덕분에 수동으로 실행
-  // }, [startDay, endDay]);
-
   // 서버에서 받아온 데이터로 innerCalendarDataArray를 업데이트
   useEffect(() => {
     if (!isSuccess) return;
@@ -150,8 +148,27 @@ const CalendarComponent = () => {
     setCalendarViewArray([...reArray]);
   }, [calednarListDataFromServer]);
 
+  const commonValidator = (confirmMessage: string) => {
+    if (!phoneNumber.trim()) {
+      alert("휴대폰 번호를 입력해주세요.");
+      throw new Error("휴대폰 번호를 입력해주세요.");
+    }
+    if (!isValidPhoneNumber(phoneNumber)) {
+      alert("휴대폰 번호 형식이 올바르지 않습니다.");
+      throw new Error("휴대폰 번호 형식이 올바르지 않습니다.");
+    }
+    if (!content.trim()) {
+      alert("내용을 입력해주세요.");
+      throw new Error("내용을 입력해주세요.");
+    }
+    if (!confirm(confirmMessage)) {
+      throw new Error("stop");
+    }
+  };
+
   const insertMutation = useMutation({
     mutationFn: async () => {
+      commonValidator("등록 하시겠습니까?");
       await useCalendarService.insertData({
         phonenumber: phoneNumber,
         content,
@@ -168,6 +185,7 @@ const CalendarComponent = () => {
 
   const updateMutation = useMutation({
     mutationFn: async () => {
+      commonValidator("수정 하시겠습니까?");
       await useCalendarService.updateData({
         id: calendarUpdateId,
         phonenumber: phoneNumber,
@@ -185,6 +203,9 @@ const CalendarComponent = () => {
 
   const deleteMutation = useMutation({
     mutationFn: async () => {
+      if (!confirm("정말로 삭제 하시겠습니까?")) {
+        throw new Error("stop");
+      }
       await useCalendarService.deleteData(`${calendarUpdateId}`);
     },
     onSuccess: () => {
@@ -201,10 +222,8 @@ const CalendarComponent = () => {
       return;
     }
     if (calendarUpdateId) {
-      if (!confirm("정말로 수정 하시겠습니까?")) return;
       updateMutation.mutate();
     } else {
-      if (!confirm("정말로 추가 하시겠습니까?")) return;
       insertMutation.mutate();
     }
   };
@@ -382,7 +401,7 @@ const CalendarComponent = () => {
                       {day.dayString}
                     </div>
                     <div
-                      className="pr-1 text-blue-400 text-xl font-bold cursor-pointer"
+                      className="pr-1 text-blue-400 text-xl font-bold cursor-pointer hover:text-blue-500 dark:text-gray-100 hover:animate-shake-slow-infinite"
                       onClick={() => runModal(day)}
                     >
                       +

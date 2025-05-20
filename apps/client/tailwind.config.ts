@@ -16,6 +16,9 @@ export default {
       },
       animation: {
         "spin-slow": "spin 3s linear",
+        "spin-slow-infinite": "spin 3s linear infinite",
+        "shake-slow": "shake 3s ease-in-out",
+        "shake-slow-infinite": "shake 3s ease-in-out infinite",
       },
       keyframes: {
         wiggle: {
@@ -25,6 +28,11 @@ export default {
           "50%": {
             transform: "rotate(3deg)",
           },
+        },
+        shake: {
+          "0%, 100%": { transform: "translateX(0)" },
+          "10%, 30%, 50%, 70%, 90%": { transform: "translateX(-2px)" },
+          "20%, 40%, 60%, 80%": { transform: "translateX(2px)" },
         },
       },
       borderRadius: {

@@ -13,7 +13,6 @@ export default async function RootLayout({
   if (!session) {
     redirect("/error");
   }
-  console.log(session);
   return (
     <>
       <Header session={session}></Header>
