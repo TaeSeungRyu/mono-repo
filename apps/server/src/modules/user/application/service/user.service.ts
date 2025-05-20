@@ -10,6 +10,7 @@ import { User } from '../../domain/user.entity';
 import { FindUserWithPagingUseCase } from '../use-cases/find-paging.use-case';
 import { UserDto } from '../../domain/user.dto';
 import { DeleteUserInfoUseCase } from '../use-cases/delete-user.use-case';
+import { FindAuthUseCase } from '../use-cases/find-auth.use-case';
 
 @Injectable()
 export class UserService {
@@ -20,6 +21,7 @@ export class UserService {
     private updateUserInfoUseCase: UpdateUserInfoUseCase,
     private findUserWithPagingUseCase: FindUserWithPagingUseCase,
     private deleteUserInfoUseCase: DeleteUserInfoUseCase,
+    private readonly findAuthUseCase: FindAuthUseCase,
   ) {}
   /**
    *
@@ -80,5 +82,15 @@ export class UserService {
    */
   async deleteUserInfo(body: UserDto): Promise<ResponseDto> {
     return this.deleteUserInfoUseCase.execute(body);
+  }
+
+  /**
+   *
+   * @param body 사용자 권한 코드
+   * @description 사용자 권한 코드를 조회합니다.
+   * @returns  사용자 권한 코드
+   */
+  async findAuthCode(): Promise<ResponseDto> {
+    return this.findAuthUseCase.execute();
   }
 }

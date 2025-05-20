@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useUserService } from "../ddd/actions";
 import Modal from "./Modal";
 import InputField from "./InputComponent";
-
+import { useAuthCodesData } from "../user/providers";
 const queryKey = "userListData";
 
 const UserManageComponent = () => {
@@ -21,6 +21,7 @@ const UserManageComponent = () => {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const limit = 3;
+  const codeFromLayout = useAuthCodesData && useAuthCodesData();
 
   const {
     data: userList = {},
@@ -42,6 +43,8 @@ const UserManageComponent = () => {
     placeholderData: (prev) => prev,
     enabled: true,
   });
+
+  useEffect(() => {}, [codeFromLayout]);
 
   useEffect(() => {
     if (userList && userList.totalPage) {
@@ -214,6 +217,24 @@ const UserManageComponent = () => {
               onChange={(e) => setOldPassword(e.target.value)}
             />
           )}
+          {codeFromLayout && codeFromLayout?.result?.data?.length > 0 && (
+            <div className="flex flex-col justify-center">
+              <div>권한</div>
+              <select
+                className="border rounded p-2"
+                onChange={(e) => {
+                  console.log(e.target.value);
+                }}
+              >
+                {codeFromLayout.result.data.map((option: any) => (
+                  <option key={option.authcode} value={option.authname}>
+                    {option.authname}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           <InputField
             label="신규 비밀번호"
             type="password"

@@ -47,4 +47,10 @@ export class UserController {
   public async deleteInfo(@Body() body: UserDto) {
     return await this.service.deleteUserInfo(body);
   }
+
+  @Roles('super', 'admin')
+  @Get('get-auth-code')
+  public async getAuthCode() {
+    return await this.service.findAuthCode();
+  }
 }
