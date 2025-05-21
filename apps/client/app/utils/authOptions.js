@@ -70,8 +70,9 @@ export const authOptions = {
               auths: me.result.data.auths,
             };
           }
+          const errorMessage = user?.message;
+          throw new Error(errorMessage || "Invalid username or password");
         }
-        throw new Error("Invalid username or password");
       },
     }),
   ],

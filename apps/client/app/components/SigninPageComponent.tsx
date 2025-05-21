@@ -29,10 +29,11 @@ const SigninPageComponent = () => {
       return singinResult;
     },
     onSuccess: (singinResult) => {
+      console.log("로그인 성공", singinResult);
       if (singinResult.status === 200) {
         router.push("/board");
       } else {
-        alert("로그인 실패");
+        alert(singinResult.message || "로그인 실패");
       }
     },
     onError: (error, variables, context) => {

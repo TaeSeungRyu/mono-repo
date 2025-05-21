@@ -35,7 +35,8 @@ export class ValidateUserUseCase
       username,
       password,
     );
-    if (!user) {
+
+    if (!user?.result?.data) {
       return new Promise((resolve) => {
         resolve(
           new ResponseDto(
@@ -56,6 +57,21 @@ export class ValidateUserUseCase
       if (user.result?.data.authCodes) {
         roles.push(...user.result.data.authCodes);
       }
+    }
+    if (roles.length === 0) {
+      return new Promise((resolve) => {
+        resolve(
+          new ResponseDto(
+            {
+              accessToken: '',
+              refreshToken: '',
+              success: false,
+            },
+            'invalid_credentials',
+            '권한이 있어야 로그인 가능합니다.',
+          ),
+        );
+      });
     }
     const accessToken = this.jwtService.sign({ username, roles });
     const refreshToken = this.jwtService.sign(
