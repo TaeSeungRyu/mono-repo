@@ -14,6 +14,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { Calendar } from './modules/calendar/domain/calendar.entity';
 import { CalendarModule } from './modules/calendar/calendar.module';
 import { Auth } from './modules/user/domain/auth.entity';
+import { SseModule } from './modules/sse/sse.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { Auth } from './modules/user/domain/auth.entity';
     BoardModule,
     UserModule,
     CalendarModule,
+    SseModule,
   ],
   controllers: [AppController],
   providers: [RedisService],

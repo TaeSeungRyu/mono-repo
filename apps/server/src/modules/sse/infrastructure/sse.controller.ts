@@ -1,12 +1,29 @@
-import { Controller, Sse } from '@nestjs/common';
-import { interval, map, Observable } from 'rxjs';
+import {
+  Controller,
+  OnModuleDestroy,
+  OnModuleInit,
+  Res,
+  Sse,
+} from '@nestjs/common';
+import { Observable } from 'rxjs';
 import { MessageEvent } from '../domain/sse.dto';
+import { SseService } from '../application/service/sse.service';
+import { Response } from 'express';
 
 @Controller('events')
-export class SseController {
-  constructor() {}
+export class SseController implements OnModuleInit, OnModuleDestroy {
+  constructor(private service: SseService) {}
+
+  public onModuleInit(): void {
+    this.service.runSubscribe();
+  }
+
+  public onModuleDestroy(): void {
+    this.service.stopSubscribe();
+  }
+
   @Sse('sse')
-  sse(): Observable<MessageEvent> {
-    return interval(1000).pipe(map(() => ({ data: { hello: 'world' } })));
+  sse(@Res() response: Response): Observable<MessageEvent> {
+    return this.service.addClient(response);
   }
 }
