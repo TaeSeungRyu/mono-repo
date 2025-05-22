@@ -42,8 +42,8 @@ export class AuthService {
    * @description 로그아웃 시 쿠키를 삭제합니다.
    * @returns 로그아웃 성공시 success: true를 포함한 ResponseDto를 반환합니다.
    */
-  async logout(req: Request, res: Response): Promise<ResponseDto> {
-    return this.logOutuseCase.execute({ req, res });
+  async logout(username: string, res: Response): Promise<ResponseDto> {
+    return this.logOutuseCase.execute({ username, res });
   }
 
   /**

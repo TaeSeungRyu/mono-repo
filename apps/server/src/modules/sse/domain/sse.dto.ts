@@ -1,4 +1,5 @@
 import { Observable, ReplaySubject } from 'rxjs';
+import { Response } from 'express';
 
 export interface MessageEvent {
   data: string | object;
@@ -25,4 +26,5 @@ export type SseClient = {
   id: string;
   subject: ReplaySubject<unknown>;
   observer: Observable<unknown>;
+  response?: Response | null;
 };

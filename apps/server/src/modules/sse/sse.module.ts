@@ -5,10 +5,16 @@ import { SseService } from './application/service/sse.service';
 import { RedisProviderModule } from 'src/redis/redis.module';
 import { IsSigninUserUseCase } from './application/use-cases/is-signin-user.use-case';
 import { AddClientUseCase } from './application/use-cases/add-client.use-case';
+import { RemoveClientUseCase } from './application/use-cases/remove-client.use-case';
 
 @Module({
   imports: [RedisProviderModule],
-  providers: [SseService, IsSigninUserUseCase, AddClientUseCase],
+  providers: [
+    SseService,
+    IsSigninUserUseCase,
+    AddClientUseCase,
+    RemoveClientUseCase,
+  ],
   controllers: [SseController],
   exports: [SseService],
 })

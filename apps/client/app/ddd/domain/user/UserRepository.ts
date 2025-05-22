@@ -24,4 +24,6 @@ export interface UserRepository {
     name: string | null,
   ): Promise<any>;
   deleteUser(id: string, oldPassword: string): Promise<any>;
+
+  logOut(username: string): Promise<any>;
 }

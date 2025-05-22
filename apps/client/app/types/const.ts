@@ -6,6 +6,7 @@ export const client_api_pre_name = "/api";
 
 export enum API {
   SIGNUP = `${proxy_pre_name}/user/signup`,
+  LOGOUT = `${proxy_pre_name}/auth/logout`,
   MYINFO = `${proxy_pre_name}/user/my-info`,
   BOARD = `${proxy_pre_name}/board`,
   BOARD_CREATE = `${proxy_pre_name}/board/create`,

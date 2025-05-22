@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Req, Res } from '@nestjs/common';
+import { Controller, Post, Body, Get, Req, Res, Query } from '@nestjs/common';
 
 import { ResponseDto } from 'src/common/common.dto';
 import { Request, Response } from 'express';
@@ -22,8 +22,12 @@ export class AuthController {
   }
 
   @Get('logout')
-  async logout(@Req() req: Request, res: Response): Promise<ResponseDto> {
-    return this.authService.logout(req, res);
+  async logOut(
+    @Query('username') username: string,
+    @Res() res: Response,
+  ): Promise<void> {
+    const result = await this.authService.logout(username, res);
+    res.json(result);
   }
 
   @Get('refresh-token')

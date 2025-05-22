@@ -11,6 +11,7 @@ import { LogOutUseCase } from './application/use-cases/log-out.use-case';
 import { RefreshTokenUseCase } from './application/use-cases/refresh-token.use-case';
 import { ValidateUserUseCase } from './application/use-cases/validate-user.use-case';
 import { RedisProviderModule } from 'src/redis/redis.module';
+import { SseModule } from '../sse/sse.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { RedisProviderModule } from 'src/redis/redis.module';
       signOptions: { expiresIn: '1h' },
     }),
     RedisProviderModule,
+    SseModule,
   ],
   controllers: [AuthController],
   providers: [

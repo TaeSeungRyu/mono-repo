@@ -1,7 +1,10 @@
+"use client";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import DarkModeBtn from "./DarkModeBtn";
 import { Session } from "next-auth";
+import { useUserService } from "../ddd/actions";
+import { signOut } from "next-auth/react";
 
 interface HeaderProps {
   session: Session;
@@ -13,12 +16,16 @@ interface HeaderProps {
 const Header = ({ session }: HeaderProps) => {
   const isSuperUser =
     session?.user?.auths && session?.user?.auths?.includes("admin");
+  const logOut = async () => {
+    await useUserService.logOut(session?.user?.username);
+    await signOut({ redirect: true, callbackUrl: "/" });
+  };
   return (
     <header className="bg-white shadow-md sticky top-0 z-50 dark:bg-gray-800 dark:text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          <div className="flex-shrink-0">
-            mono repo app
+          <div className="flex-shrink-0 flex items-center gap-2">
+            리엑트앱(모노레포!)
             <DarkModeBtn></DarkModeBtn>
           </div>
           <nav className="flex space-x-6">
@@ -42,6 +49,7 @@ const Header = ({ session }: HeaderProps) => {
                 user
               </Link>
             )}
+            <button onClick={() => logOut()}>logOut</button>
           </nav>
         </div>
       </div>

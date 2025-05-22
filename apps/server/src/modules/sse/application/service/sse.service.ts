@@ -4,6 +4,7 @@ import { BehaviorSubject, map, Observable } from 'rxjs';
 import { MessageEvent, SseClient, SseEvent } from '../../domain/sse.dto';
 import { IsSigninUserUseCase } from '../use-cases/is-signin-user.use-case';
 import { AddClientUseCase } from '../use-cases/add-client.use-case';
+import { RemoveClientUseCase } from '../use-cases/remove-client.use-case';
 
 //TODO : 이벤트를 주고받기 위한 타입이 정의되어 있지 않습니다.
 @Injectable()
@@ -15,6 +16,7 @@ export class SseService {
   constructor(
     private readonly isSigninUserUseCase: IsSigninUserUseCase,
     private readonly addClientUseCase: AddClientUseCase,
+    private readonly removeClientUseCase: RemoveClientUseCase,
   ) {
     this.eventBus = new BehaviorSubject({
       event: '',
@@ -54,6 +56,16 @@ export class SseService {
   }
 
   /**
+   * 클라이언트의 연결을 종료합니다(로그 아웃인 경우)
+   * @param id 클라이언트의 아이디 입니다.
+   */
+  logOutClient(id: string) {
+    if (id) {
+      this.clients = this.removeClientUseCase.execute(this.clients, id, true);
+    }
+  }
+
+  /**
    *
    * @param response 브라우저의 응답 객체 입니다.
    * @returns 브라우저에 전송할 데이터 입니다.
@@ -68,25 +80,29 @@ export class SseService {
       response.status(401).end();
       return new Observable<MessageEvent>();
     }
-    const { result, data } = await this.addClientUseCase.execute(this.clients);
+    const { result, data } = await this.addClientUseCase.execute(
+      this.clients,
+      response,
+      isUser.data?.id,
+    );
     if (!result || !data) {
       response.status(500).end();
       return new Observable<MessageEvent>();
     }
-    const newId = data?.id;
+    const identity = data?.id;
     const observer = data?.observer;
-    if (!observer || newId === undefined) {
+    if (!observer || identity === undefined) {
       response.status(500).end();
       return new Observable<MessageEvent>();
     }
     response.on('close', () => {
-      this.clients = this.clients.filter((stream) => stream.id !== id);
+      this.clients = this.removeClientUseCase.execute(this.clients, identity);
     });
     return observer.pipe(
       map((data) => {
         //브라우저에 전송할 데이터
         const result: MessageEvent = {
-          id: newId,
+          id: identity,
           data: data || {},
         };
         return result;

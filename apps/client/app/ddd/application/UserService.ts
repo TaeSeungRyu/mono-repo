@@ -98,4 +98,9 @@ export class UserService {
     const data = await this.userRepo.deleteUser(id, oldPassword);
     return data;
   }
+
+  async logOut(username: string) {
+    const data = await this.userRepo.logOut(username);
+    return data;
+  }
 }

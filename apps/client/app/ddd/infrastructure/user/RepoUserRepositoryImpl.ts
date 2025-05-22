@@ -147,4 +147,23 @@ export class UserRepositoryImpl implements UserRepository {
       }
     });
   }
+
+  async logOut(username: string): Promise<any> {
+    const logOutResult = await fetcher(`${API.LOGOUT}?username=${username}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return new Promise(async (resolve, reject) => {
+      if (logOutResult.ok) {
+        const { result } = await logOutResult.json();
+        resolve(
+          new CommonResponse({ data: result.data, success: result.success }),
+        );
+      } else {
+        reject(new Error("DB Insert Error"));
+      }
+    });
+  }
 }
