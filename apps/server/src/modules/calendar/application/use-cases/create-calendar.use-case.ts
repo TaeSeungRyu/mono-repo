@@ -6,6 +6,7 @@ import { ResponseDto } from 'src/common/common.dto';
 import { parseDateSample_FROM_COMMON_UTILS } from 'my-common-utils';
 import { Request } from 'express';
 import { Injectable } from '@nestjs/common';
+import { SseService } from 'src/modules/sse/application/service/sse.service';
 
 @Injectable()
 export class CreateCalendarUseCase
@@ -14,6 +15,7 @@ export class CreateCalendarUseCase
   constructor(
     @InjectRepository(Calendar)
     private readonly calendarRepo: Repository<Calendar>,
+    private readonly sseService: SseService,
   ) {}
   async execute({
     req,
@@ -27,6 +29,13 @@ export class CreateCalendarUseCase
       calendar.createdday = `${(parseDateSample_FROM_COMMON_UTILS as (arg?: string) => string)()}`;
     }
     const data = await this.calendarRepo.save(calendar);
+    this.sseService.publishEvent({
+      event: 'calendar',
+      data: {
+        data: {},
+        user: req.user || {},
+      },
+    });
     return new ResponseDto(
       { success: true, data: data },
       'success',

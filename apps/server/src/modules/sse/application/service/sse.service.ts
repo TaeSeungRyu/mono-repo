@@ -1,29 +1,32 @@
 import { Injectable } from '@nestjs/common';
-import { randomUUID } from 'crypto';
 import { Response } from 'express';
-import { BehaviorSubject, map, Observable, ReplaySubject } from 'rxjs';
-import { MessageEvent } from '../../domain/sse.dto';
+import { BehaviorSubject, map, Observable } from 'rxjs';
+import { MessageEvent, SseClient, SseEvent } from '../../domain/sse.dto';
+import { IsSigninUserUseCase } from '../use-cases/is-signin-user.use-case';
+import { AddClientUseCase } from '../use-cases/add-client.use-case';
 
 //TODO : 이벤트를 주고받기 위한 타입이 정의되어 있지 않습니다.
 @Injectable()
 export class SseService {
-  private clients: {
-    //접속한 브라우저의 커넥션을 담을 객체
-    id: string;
-    subject: ReplaySubject<unknown>;
-    observer: Observable<unknown>;
-  }[] = [];
+  private clients: SseClient[] = [];
 
   //다른 도메인에서 발생한 이벤트를 전달하기 위한 객체
-  private eventBus: BehaviorSubject<unknown>;
-  constructor() {
-    this.eventBus = new BehaviorSubject(null);
+  private eventBus: BehaviorSubject<SseEvent>;
+  constructor(
+    private readonly isSigninUserUseCase: IsSigninUserUseCase,
+    private readonly addClientUseCase: AddClientUseCase,
+  ) {
+    this.eventBus = new BehaviorSubject({
+      event: '',
+      data: {},
+      id: '',
+    });
   }
 
   /**
    * @param data 이벤트 전달용 데이터 입니다.
    */
-  publishEvent(data: unknown) {
+  publishEvent(data: SseEvent) {
     this.eventBus.next(data);
   }
 
@@ -33,7 +36,10 @@ export class SseService {
   runSubscribe() {
     this.eventBus.subscribe((data) => {
       this.clients.forEach((stream) => {
-        stream.subject.next({ hello: 'world', data });
+        stream.subject.next({
+          event: data.event,
+          data: data || {},
+        });
       });
     });
   }
@@ -53,30 +59,38 @@ export class SseService {
    * @returns 브라우저에 전송할 데이터 입니다.
    * @description 접속한 브라우저의 커넥션을 담고 있는 객체를 생성합니다.
    */
-  addClient(response: Response): Observable<MessageEvent> {
-    const newId = randomUUID();
-    response.on('close', () => this.removeClient(newId));
-    const subject = new ReplaySubject();
-    const observer = subject.asObservable();
-    this.clients.push({ id: newId, subject, observer });
+  async addClient(
+    id: string,
+    response: Response,
+  ): Promise<Observable<MessageEvent>> {
+    const isUser = await this.isSigninUserUseCase.execute(id);
+    if (!isUser.result) {
+      response.status(401).end();
+      return new Observable<MessageEvent>();
+    }
+    const { result, data } = await this.addClientUseCase.execute(this.clients);
+    if (!result || !data) {
+      response.status(500).end();
+      return new Observable<MessageEvent>();
+    }
+    const newId = data?.id;
+    const observer = data?.observer;
+    if (!observer || newId === undefined) {
+      response.status(500).end();
+      return new Observable<MessageEvent>();
+    }
+    response.on('close', () => {
+      this.clients = this.clients.filter((stream) => stream.id !== id);
+    });
     return observer.pipe(
-      map(() => {
+      map((data) => {
         //브라우저에 전송할 데이터
-        const data: MessageEvent = {
+        const result: MessageEvent = {
           id: newId,
-          data: { hello: 'world' },
+          data: data || {},
         };
-        return data;
+        return result;
       }),
     );
-  }
-
-  /**
-   *
-   * @param id 브라우저의 커넥션 id 입니다.
-   * @description 브라우저의 커넥션을 종료합니다.
-   */
-  private removeClient(id: string): void {
-    this.clients = this.clients.filter((stream) => stream.id !== id);
   }
 }

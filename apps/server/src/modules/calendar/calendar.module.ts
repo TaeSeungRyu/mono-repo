@@ -9,9 +9,10 @@ import { DeleteCalendarUseCase } from './application/use-cases/delete-calendar.u
 import { UpdateCalendarUseCase } from './application/use-cases/update-calendar.use-case';
 import { FindCalendarUseCase } from './application/use-cases/find-calendar.use-case';
 import { CalendarService } from './application/services/calendar.service';
+import { SseModule } from '../sse/sse.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Calendar])],
+  imports: [SseModule, TypeOrmModule.forFeature([Calendar])],
   providers: [
     CreateCalendarUseCase,
     DeleteCalendarUseCase,

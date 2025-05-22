@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 
 import { User } from './domain/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { RedisService } from 'src/redis/redis.service';
 import { UserService } from './application/service/user.service';
 import { FindUserByIdPasswordUseCase } from './application/use-cases/find-id-password.use-case';
 import { FindUserByIdUseCase } from './application/use-cases/find-id.use-case';
@@ -13,11 +12,11 @@ import { FindUserWithPagingUseCase } from './application/use-cases/find-paging.u
 import { DeleteUserInfoUseCase } from './application/use-cases/delete-user.use-case';
 import { Auth } from './domain/auth.entity';
 import { FindAuthUseCase } from './application/use-cases/find-auth.use-case';
+import { RedisProviderModule } from 'src/redis/redis.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Auth])],
+  imports: [RedisProviderModule, TypeOrmModule.forFeature([User, Auth])],
   providers: [
-    RedisService,
     UserService,
     FindAuthUseCase,
     FindUserByIdPasswordUseCase,

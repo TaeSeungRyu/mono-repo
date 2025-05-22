@@ -8,9 +8,10 @@ import { FindOneBoardUseCase } from './application/use-cases/find-one-board.use-
 import { UpdateBoardUseCase } from './application/use-cases/update-board.use-case';
 import { BoardService } from './application/services/board.service';
 import { BoardController } from './infrastructure/board.controller';
+import { SseModule } from '../sse/sse.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Board])],
+  imports: [SseModule, TypeOrmModule.forFeature([Board])],
   providers: [
     CreateBoardUseCase,
     DeleteBoardUseCase,

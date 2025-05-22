@@ -2,6 +2,7 @@ import {
   Controller,
   OnModuleDestroy,
   OnModuleInit,
+  Param,
   Res,
   Sse,
 } from '@nestjs/common';
@@ -22,8 +23,11 @@ export class SseController implements OnModuleInit, OnModuleDestroy {
     this.service.stopSubscribe();
   }
 
-  @Sse('sse')
-  sse(@Res() response: Response): Observable<MessageEvent> {
-    return this.service.addClient(response);
+  @Sse('sse/:id')
+  sse(
+    @Param('id') id: string,
+    @Res() response: Response,
+  ): Promise<Observable<MessageEvent>> {
+    return this.service.addClient(id, response);
   }
 }
