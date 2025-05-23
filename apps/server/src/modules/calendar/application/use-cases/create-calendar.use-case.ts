@@ -32,7 +32,7 @@ export class CreateCalendarUseCase
     this.sseService.publishEvent({
       event: 'calendar',
       data: {
-        data: {},
+        data: data || {},
         user: req.user || {},
       },
     });

@@ -56,16 +56,6 @@ export class SseService {
   }
 
   /**
-   * 클라이언트의 연결을 종료합니다(로그 아웃인 경우)
-   * @param id 클라이언트의 아이디 입니다.
-   */
-  logOutClient(id: string) {
-    if (id) {
-      this.clients = this.removeClientUseCase.execute(this.clients, id, true);
-    }
-  }
-
-  /**
    *
    * @param response 브라우저의 응답 객체 입니다.
    * @returns 브라우저에 전송할 데이터 입니다.
@@ -83,7 +73,6 @@ export class SseService {
     const { result, data } = await this.addClientUseCase.execute(
       this.clients,
       response,
-      isUser.data?.id,
     );
     if (!result || !data) {
       response.status(500).end();
