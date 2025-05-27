@@ -38,7 +38,7 @@ export async function middleware(request: NextRequest) {
       headers: requestHeaders,
     },
   });
-  console.log("response.status:", response.status);
+  console.log("response.status:", response.status, request.url);
   if (response.status == 401) {
     console.log("401 Unauthorized");
   }

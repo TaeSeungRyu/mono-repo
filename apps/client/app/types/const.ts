@@ -21,9 +21,11 @@ export enum API {
   USERLIST = `${proxy_pre_name}/user/find-paging`,
   USERUPDATE = `${proxy_pre_name}/user/update-info`,
   USERDELETE = `${proxy_pre_name}/user/delete`,
-  DIRECT_SERVER_USER_AUTH_CODE = `/user/get-auth-code`,
+
+  SSE = `${proxy_pre_name}/events/sse`,
 
   LOCAL_REFRESH = `${client_api_pre_name}/auth/refresh`,
+  DIRECT_SERVER_USER_AUTH_CODE = `/user/get-auth-code`,
   DIRECT_SERVER_MYINFO = "/user/my-info",
   DIRECT_SERVER_SIGNIN = "/auth/login",
   DIRECT_SERVER_REFRESH = "/auth/refresh-token",
