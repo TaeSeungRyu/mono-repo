@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS calendar (
     scheduleday VARCHAR(24)
 );
 
--- 5. 달력
+-- 5. 권한
 CREATE TABLE IF NOT EXISTS auth (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(), 
     authCode VARCHAR(100),
@@ -65,4 +65,11 @@ INSERT INTO auth (authCode, authName, createdDay)
 SELECT 'user', 'user', '2025-05-01 00:00:00'
 WHERE NOT EXISTS (
   SELECT 1 FROM auth WHERE authCode = 'user'
+);
+
+-- 6. 스크래핑
+CREATE TABLE IF NOT EXISTS scrapping (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(), 
+    contents TEXT,
+    createdDay VARCHAR(100)
 );

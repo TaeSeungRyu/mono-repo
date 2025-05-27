@@ -15,6 +15,9 @@ import { Calendar } from './modules/calendar/domain/calendar.entity';
 import { CalendarModule } from './modules/calendar/calendar.module';
 import { Auth } from './modules/user/domain/auth.entity';
 import { SseModule } from './modules/sse/sse.module';
+import { Scrapping } from './modules/scrapping/domain/scrapping.entity';
+import { ScrappingModule } from './modules/scrapping/scrapping.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -28,15 +31,17 @@ import { SseModule } from './modules/sse/sse.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [User, Auth, Board, Calendar],
+      entities: [User, Auth, Board, Calendar, Scrapping],
       synchronize: false, // dev용 자동 스키마 sync
     }),
+    ScheduleModule.forRoot(),
     AuthModule,
     RedisProviderModule,
     BoardModule,
     UserModule,
     CalendarModule,
     SseModule,
+    ScrappingModule,
   ],
   controllers: [AppController],
   providers: [RedisService],
