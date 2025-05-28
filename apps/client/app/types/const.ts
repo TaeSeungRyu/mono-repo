@@ -24,6 +24,8 @@ export enum API {
 
   SSE = `${proxy_pre_name}/events/sse`,
 
+  SCRAPPING = `${proxy_pre_name}/scrapping`,
+
   LOCAL_REFRESH = `${client_api_pre_name}/auth/refresh`,
   DIRECT_SERVER_USER_AUTH_CODE = `/user/get-auth-code`,
   DIRECT_SERVER_MYINFO = "/user/my-info",

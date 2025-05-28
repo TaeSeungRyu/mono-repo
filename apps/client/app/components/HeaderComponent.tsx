@@ -70,6 +70,12 @@ const Header = ({ session }: HeaderProps) => {
             >
               calendar
             </Link>
+            <Link
+              href="/scrapping"
+              className="text-gray-700 hover:text-blue-600 transition"
+            >
+              scrapping
+            </Link>
             {isSuperUser && (
               <Link
                 href="/user"
