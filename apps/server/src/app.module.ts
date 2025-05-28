@@ -18,6 +18,7 @@ import { SseModule } from './modules/sse/sse.module';
 import { Scrapping } from './modules/scrapping/domain/scrapping.entity';
 import { ScrappingModule } from './modules/scrapping/scrapping.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { GithubModule } from './modules/github/github.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     CalendarModule,
     SseModule,
     ScrappingModule,
+    GithubModule,
   ],
   controllers: [AppController],
   providers: [RedisService],

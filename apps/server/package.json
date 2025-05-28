@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@nestjs-modules/ioredis": "^2.0.2",
+    "@nestjs/axios": "^4.0.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
@@ -30,6 +31,7 @@
     "@nestjs/schedule": "^6.0.0",
     "@nestjs/typeorm": "^11.0.0",
     "@types/puppeteer": "^7.0.4",
+    "axios": "^1.9.0",
     "cookie-parser": "^1.4.7",
     "ioredis": "^5.6.1",
     "my-common-utils": "*",
