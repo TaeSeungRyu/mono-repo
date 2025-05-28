@@ -7,6 +7,7 @@ import { parseDateSample_FROM_COMMON_UTILS } from 'my-common-utils';
 
 @Injectable()
 export class TodoUseCase {
+  static readonly TARGET_URL = 'https://news.naver.com/';
   constructor(
     @InjectRepository(Scrapping)
     private readonly scrappingRepo: Repository<Scrapping>,
@@ -20,9 +21,8 @@ export class TodoUseCase {
       console.log('Browser disconnected, reinitializing...');
     });
     const page = await browser.newPage();
-    await page.goto('https://news.naver.com/');
+    await page.goto(TodoUseCase.TARGET_URL);
     const contents = await page.content();
-    console.log('Page content:', contents);
 
     await this.scrappingRepo.save({
       contents: contents,
