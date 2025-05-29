@@ -19,6 +19,7 @@ import { Scrapping } from './modules/scrapping/domain/scrapping.entity';
 import { ScrappingModule } from './modules/scrapping/scrapping.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { GithubModule } from './modules/github/github.module';
+import { KafkaModule } from './modules/kafka/kafka.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { GithubModule } from './modules/github/github.module';
     SseModule,
     ScrappingModule,
     GithubModule,
+    KafkaModule,
   ],
   controllers: [AppController],
   providers: [RedisService],
