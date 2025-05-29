@@ -43,7 +43,7 @@ const ScrappingComponent = () => {
 
   return (
     <>
-      <h2 className="text-xl font-semibold mb-4">스크래핑 결과</h2>
+      <h2 className="text-xl font-semibold my-4">스크래핑 결과</h2>
       <div className="p-4 bg-white rounded-lg shadow-md h-[70vh] overflow-y-auto">
         {isLoading && <p>로딩 중...</p>}
         {scrappingData?.data && scrappingData.data.length > 0 && (

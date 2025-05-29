@@ -25,11 +25,9 @@ const Header = ({ session }: HeaderProps) => {
   };
 
   useEffect(() => {
-    console.log(process.env.API_SERVER_URL);
     const eventSource = new EventSource(
       `${API.SSE}/${session?.user?.username}`,
     );
-
     eventSource.onmessage = (event) => {
       const parsed = JSON.parse(event.data);
       const { data, user } = parsed?.data?.data;
@@ -38,12 +36,10 @@ const Header = ({ session }: HeaderProps) => {
         `${user?.username}이 ${data.createdday}에 ${data.content}을 작성`,
       ]);
     };
-
     eventSource.onerror = (err) => {
       console.error("SSE error:", err);
       eventSource.close();
     };
-
     return () => {
       eventSource.close();
     };
@@ -75,6 +71,12 @@ const Header = ({ session }: HeaderProps) => {
               className="text-gray-700 hover:text-blue-600 transition"
             >
               scrapping
+            </Link>
+            <Link
+              href="/github"
+              className="text-gray-700 hover:text-blue-600 transition"
+            >
+              git
             </Link>
             {isSuperUser && (
               <Link
