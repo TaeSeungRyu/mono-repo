@@ -1,23 +1,8 @@
 import * as cookieParser from 'cookie-parser';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import {
-  KafkaOptions,
-  MicroserviceOptions,
-  Transport,
-} from '@nestjs/microservices';
-
-export const KAFKA_OPTION: KafkaOptions = {
-  transport: Transport.KAFKA,
-  options: {
-    client: {
-      brokers: ['localhost:9092'], // Kafka 브로커 주소
-    },
-    consumer: {
-      groupId: 'nestjs-consumer-group', // 그룹 ID
-    },
-  },
-};
+import { MicroserviceOptions } from '@nestjs/microservices';
+import { KAFKA_OPTION } from './const';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);

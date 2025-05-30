@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule } from '@nestjs/microservices';
-import { KAFKA_OPTION } from 'src/main';
-import { KafkaTcpController } from './kafka.tcp.controller';
-import { KafkaService } from './kafka.service';
+
+import { KafkaTcpController } from './infrastructure/kafka.tcp.controller';
+import { KafkaService } from './application/kafka.service';
+import { KafkaController } from './infrastructure/kafka.controller';
+import { SseModule } from '../sse/sse.module';
+import { KAFKA_OPTION } from 'src/const';
 
 @Module({
   imports: [
@@ -12,9 +15,10 @@ import { KafkaService } from './kafka.service';
         ...KAFKA_OPTION,
       },
     ]),
+    SseModule,
   ],
   providers: [KafkaService],
-  controllers: [KafkaTcpController],
+  controllers: [KafkaTcpController, KafkaController],
   exports: [], //
 })
 export class KafkaModule {}
