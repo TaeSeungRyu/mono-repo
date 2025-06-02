@@ -30,10 +30,11 @@ const Header = ({ session }: HeaderProps) => {
     );
     eventSource.onmessage = (event) => {
       const parsed = JSON.parse(event.data);
-      const { data, user } = parsed?.data?.data;
+      //const { data, user } = parsed?.data?.data?.data;
+      console.log("SSE data:", parsed);
       setMessages((prev) => [
         ...prev,
-        `${user?.username}이 ${data.createdday}에 ${data.content}을 작성`,
+        `(${parsed?.event}) ${parsed?.data?.data?.user?.username}이 ${parsed?.data?.data?.createdday}에 ${parsed?.data?.data?.content}을 작성`,
       ]);
     };
     eventSource.onerror = (err) => {
@@ -78,6 +79,12 @@ const Header = ({ session }: HeaderProps) => {
             >
               git
             </Link>
+            <Link
+              href="/kafka"
+              className="text-gray-700 hover:text-blue-600 transition"
+            >
+              kafka
+            </Link>
             {isSuperUser && (
               <Link
                 href="/user"
@@ -88,18 +95,18 @@ const Header = ({ session }: HeaderProps) => {
             )}
             <button onClick={() => logOut()}>logOut</button>
           </nav>
-          <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              {messages.length > 0
-                ? messages.map((msg, index) => (
-                    <div key={index} className="mb-1">
-                      {msg}
-                    </div>
-                  ))
-                : "No messages"}
-            </span>
-          </div>
         </div>
+      </div>
+      <div className="flex items-center space-x-4 absolute right-0 top-0 mt-2 mr-4 bg-gray-100 dark:bg-gray-700 rounded-lg p-2">
+        <span className="text-sm text-gray-500 dark:text-gray-400">
+          {messages.length > 0
+            ? messages.map((msg, index) => (
+                <div key={index} className="mb-1">
+                  {msg}
+                </div>
+              ))
+            : "No messages"}
+        </span>
       </div>
     </header>
   );

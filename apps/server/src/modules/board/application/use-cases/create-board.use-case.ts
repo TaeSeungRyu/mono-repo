@@ -34,7 +34,7 @@ export class CreateBoardUseCase
     this.sseService.publishEvent({
       event: 'board',
       data: {
-        data: data || {},
+        ...data,
         user: req.user || {},
       },
     });

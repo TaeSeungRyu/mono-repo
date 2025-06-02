@@ -26,6 +26,7 @@ export enum API {
 
   SCRAPPING = `${proxy_pre_name}/scrapping`,
   GITHUB = `${proxy_pre_name}/github`,
+  KAFKA_ADD = `${proxy_pre_name}/kafka/add`,
 
   LOCAL_REFRESH = `${client_api_pre_name}/auth/refresh`,
   DIRECT_SERVER_USER_AUTH_CODE = `/user/get-auth-code`,
