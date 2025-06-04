@@ -1,8 +1,12 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { WinstonModule } from 'nest-winston';
+import * as winston from 'winston';
+import { ScheduleModule } from '@nestjs/schedule';
+
+import { AppController } from './app.controller';
 
 import { RedisProviderModule } from './redis/redis.module';
 import { RedisService } from './redis/redis.service';
@@ -17,9 +21,9 @@ import { Auth } from './modules/user/domain/auth.entity';
 import { SseModule } from './modules/sse/sse.module';
 import { Scrapping } from './modules/scrapping/domain/scrapping.entity';
 import { ScrappingModule } from './modules/scrapping/scrapping.module';
-import { ScheduleModule } from '@nestjs/schedule';
 import { GithubModule } from './modules/github/github.module';
 import { KafkaModule } from './modules/kafka/kafka.module';
+import { LoggerRunner } from './logger/logger.runner';
 
 @Module({
   imports: [
@@ -37,6 +41,17 @@ import { KafkaModule } from './modules/kafka/kafka.module';
       synchronize: false, // dev용 자동 스키마 sync
     }),
     ScheduleModule.forRoot(),
+    WinstonModule.forRoot({
+      transports: [
+        new winston.transports.Console({
+          format: winston.format.combine(
+            winston.format.timestamp(),
+            winston.format.simple(),
+          ),
+        }),
+      ],
+    }),
+
     AuthModule,
     RedisProviderModule,
     BoardModule,
@@ -48,6 +63,6 @@ import { KafkaModule } from './modules/kafka/kafka.module';
     KafkaModule,
   ],
   controllers: [AppController],
-  providers: [RedisService],
+  providers: [RedisService, LoggerRunner],
 })
 export class AppModule {}

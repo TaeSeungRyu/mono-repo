@@ -3,9 +3,13 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { MicroserviceOptions } from '@nestjs/microservices';
 import { KAFKA_OPTION } from './const';
+import { winstonLoggerOptions } from './logger/winston-logger';
+import { WinstonModule } from 'nest-winston';
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: WinstonModule.createLogger(winstonLoggerOptions),
+  });
   if (app) {
     const parser = cookieParser();
     app.use(parser);
