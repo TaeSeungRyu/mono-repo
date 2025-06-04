@@ -16,7 +16,7 @@ const _addAuthHeader = async (request: NextRequest, headers: Headers) => {
       token: tokens,
       secret: process.env.NEXTAUTH_SECRET || "",
     });
-    //console.log("savedValue savedValue savedValue", savedValue);
+    //console.log("savedValue?.serverAccessToken", savedValue?.serverAccessToken);
     headers.set("Authorization", `Bearer ${savedValue?.serverAccessToken}`); //여기에 Auth같은 헤더 추가를 하면 됩니다.
     headers.set("cookie", `refreshToken=${savedValue?.serverRefreshToken}`); //쿠키도 추가
   } catch (e) {
@@ -33,12 +33,14 @@ export async function middleware(request: NextRequest) {
   if (requestPath.includes("api-server")) {
     await _addAuthHeader(request, requestHeaders);
   }
+
+  //console.log("requestPath :", requestPath);
   const response = NextResponse.next({
     request: {
       headers: requestHeaders,
     },
   });
-  console.log("response.status:", response.status, request.url);
+  //console.log("response.status:", response.status, request.url);
   if (response.status == 401) {
     console.log("401 Unauthorized");
   }

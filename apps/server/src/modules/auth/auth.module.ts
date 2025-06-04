@@ -19,6 +19,7 @@ import { SseModule } from '../sse/sse.module';
     PassportModule,
     JwtModule.register({
       secret: `${SECRETORKEY}`,
+      //signOptions: { expiresIn: '1m' },
       signOptions: { expiresIn: '1h' },
     }),
     RedisProviderModule,

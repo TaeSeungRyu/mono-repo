@@ -4,24 +4,32 @@ import React, { useEffect, useState } from "react";
 import InputField from "./InputComponent";
 import { useUserService } from "../ddd/actions";
 import { useRouter } from "next/navigation";
-import { signOut, getCsrfToken } from "next-auth/react";
+import { signOut, getCsrfToken, useSession } from "next-auth/react";
 import { useMutation } from "@tanstack/react-query";
 
 const SigninPageComponent = () => {
+  const { status } = useSession();
   const router = useRouter();
-  const [username, setUsername] = useState("admin");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("admin1234");
   const [csrfToken, setCsrfToken] = useState<string | undefined>();
 
   useEffect(() => {
-    signOut({ redirect: false });
-    useUserService.alterLocalStorage(null, null);
-    if (!csrfToken) {
-      getCsrfToken().then((token) => {
-        setCsrfToken(token);
-      });
-    }
+    const prepareSignin = async () => {
+      await signOut({ redirect: false });
+      useUserService.alterLocalStorage(null, null);
+      const token = await getCsrfToken();
+      setCsrfToken(token);
+    };
+    prepareSignin();
   }, []);
+
+  useEffect(() => {
+    if (status === "loading") return;
+    if (status === "authenticated" && username != "") {
+      router.push("/board");
+    }
+  }, [status]);
 
   const { mutate: handleLogin, isPending } = useMutation({
     mutationFn: async () => {
@@ -30,9 +38,7 @@ const SigninPageComponent = () => {
     },
     onSuccess: (singinResult) => {
       console.log("로그인 성공", singinResult);
-      if (singinResult.status === 200) {
-        router.push("/board");
-      } else {
+      if (!(singinResult.status === 200)) {
         alert(singinResult.message || "로그인 실패");
       }
     },
