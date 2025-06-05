@@ -23,7 +23,7 @@ import { Scrapping } from './modules/scrapping/domain/scrapping.entity';
 import { ScrappingModule } from './modules/scrapping/scrapping.module';
 import { GithubModule } from './modules/github/github.module';
 import { KafkaModule } from './modules/kafka/kafka.module';
-import { LoggerRunner } from './logger/logger.runner';
+import { LogModule } from './logger/log.module';
 
 @Module({
   imports: [
@@ -61,8 +61,9 @@ import { LoggerRunner } from './logger/logger.runner';
     ScrappingModule,
     GithubModule,
     KafkaModule,
+    LogModule,
   ],
   controllers: [AppController],
-  providers: [RedisService, LoggerRunner],
+  providers: [RedisService],
 })
 export class AppModule {}

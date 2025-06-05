@@ -16,11 +16,8 @@ export class LoggerRunner {
     timeZone: 'Asia/Seoul',
   })
   excute() {
-    this.logger.log('Log directory cleanup started.');
-
     const files = fs.readdirSync(this.baseLogDir);
     const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-
     for (const file of files) {
       const filePath = path.join(this.baseLogDir, file);
       // 디렉토리는 건너뜀
@@ -34,11 +31,9 @@ export class LoggerRunner {
       // 디렉토리 없으면 생성
       if (!fs.existsSync(targetDir)) {
         fs.mkdirSync(targetDir, { recursive: true });
-        this.logger.log(`Created directory: ${targetDir}`);
       }
       // 파일 이동
       fs.renameSync(filePath, targetPath);
-      this.logger.log(`Moved ${file} → ${targetDir}/`);
     }
     this.logger.log('Log directory cleanup finished.');
   }
