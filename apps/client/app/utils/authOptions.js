@@ -48,7 +48,9 @@ export const authOptions = {
               }),
             },
           );
+
           const user = await requestResult?.json();
+          console.log(user.result.accessToken);
           if (user?.result?.success) {
             const getMe = await fetch(
               `${process.env.API_SERVER_URL}${API.DIRECT_SERVER_MYINFO}`,

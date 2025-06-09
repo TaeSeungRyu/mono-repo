@@ -26,6 +26,7 @@ import { ScrappingModule } from './modules/scrapping/scrapping.module';
 import { GithubModule } from './modules/github/github.module';
 import { KafkaModule } from './modules/kafka/kafka.module';
 import { LogModule } from './logger/log.module';
+import { ChatGateway } from './chat/chat.gateway';
 
 @Module({
   imports: [
@@ -83,6 +84,7 @@ import { LogModule } from './logger/log.module';
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
+    ChatGateway,
   ],
 })
 export class AppModule {}
