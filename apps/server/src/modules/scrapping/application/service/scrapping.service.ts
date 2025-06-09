@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { TodoUseCase } from '../use-cases/todo.use-case';
 import { ResponseDto } from 'src/common/common.dto';
 import { ScrappingDto } from '../../domain/scrapping.dto';
@@ -6,6 +6,7 @@ import { FindScrappingWithPagingUseCase } from '../use-cases/find.use-case';
 
 @Injectable()
 export class ScrappingRunnerService {
+  private readonly logger = new Logger(ScrappingRunnerService.name);
   constructor(
     private todoUseCase: TodoUseCase,
     private findScrappingWithPagingUseCase: FindScrappingWithPagingUseCase,
@@ -13,7 +14,7 @@ export class ScrappingRunnerService {
 
   excute(): void {
     this.todoUseCase.excute().catch((error) => {
-      console.error('Error during scrapping execution:', error);
+      this.logger.error('Error during scrapping execution:', error);
     });
   }
 

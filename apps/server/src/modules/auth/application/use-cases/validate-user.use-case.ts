@@ -129,8 +129,7 @@ export class ValidateUserUseCase
         ); // 24시간
       })
       .catch((error) => {
-        console.error('Redis error:', error);
-        // Redis 오류 처리 로직 추가 (예: 로그 기록, 알림 등)
+        throw error;
       });
   }
 }

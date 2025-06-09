@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Response } from 'express';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 import { MessageEvent, SseClient, SseEvent } from '../../domain/sse.dto';
@@ -9,6 +9,8 @@ import { RemoveClientUseCase } from '../use-cases/remove-client.use-case';
 //TODO : 이벤트를 주고받기 위한 타입이 정의되어 있지 않습니다.
 @Injectable()
 export class SseService {
+  private readonly logger = new Logger(SseService.name);
+
   private clients: SseClient[] = [];
 
   //다른 도메인에서 발생한 이벤트를 전달하기 위한 객체
@@ -30,6 +32,7 @@ export class SseService {
    */
   publishEvent(data: SseEvent) {
     this.eventBus.next(data);
+    this.logger.log(`Event published: ${data.event}`, data);
   }
 
   /**

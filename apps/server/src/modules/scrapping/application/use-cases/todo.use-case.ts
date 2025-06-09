@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Scrapping } from '../../domain/scrapping.entity';
 import { Repository } from 'typeorm';
@@ -7,6 +7,8 @@ import { parseDateSample_FROM_COMMON_UTILS } from 'my-common-utils';
 
 @Injectable()
 export class TodoUseCase {
+  private readonly logger = new Logger(TodoUseCase.name);
+
   static readonly TARGET_URL = 'https://news.naver.com/';
   constructor(
     @InjectRepository(Scrapping)
@@ -18,7 +20,7 @@ export class TodoUseCase {
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
     browser.on('disconnected', () => {
-      console.log('Browser disconnected, reinitializing...');
+      this.logger.log('Browser disconnected, reinitializing...');
     });
     const page = await browser.newPage();
     await page.goto(TodoUseCase.TARGET_URL);
