@@ -1,4 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 import { MessageEvent, SseClient, SseEvent } from '../../domain/sse.dto';
@@ -8,10 +13,11 @@ import { RemoveClientUseCase } from '../use-cases/remove-client.use-case';
 
 //TODO : 이벤트를 주고받기 위한 타입이 정의되어 있지 않습니다.
 @Injectable()
-export class SseService {
+export class SseService implements OnModuleDestroy, OnModuleInit {
   private readonly logger = new Logger(SseService.name);
 
   private clients: SseClient[] = [];
+  private intervalId: NodeJS.Timeout | null = null;
 
   //다른 도메인에서 발생한 이벤트를 전달하기 위한 객체
   private eventBus: BehaviorSubject<SseEvent>;
@@ -25,6 +31,27 @@ export class SseService {
       data: {},
       id: '',
     });
+  }
+
+  onModuleInit() {
+    this.pintRunner();
+  }
+
+  onModuleDestroy() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.logger.log('Ping runner stopped');
+    }
+  }
+
+  pintRunner() {
+    this.intervalId = setInterval(() => {
+      this.publishEvent({
+        event: 'ping',
+        data: {},
+        id: '',
+      });
+    }, 60000); // 10초마다 ping 이벤트 발행
   }
 
   /**

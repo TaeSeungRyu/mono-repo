@@ -26,20 +26,33 @@ const Header = ({ session }: HeaderProps) => {
 
   useEffect(() => {
     const eventSource = new EventSource(
-      `${API.SSE}/${session?.user?.username}`,
+      `${API.LOCAL_SSE}?username=${session?.user?.username}`,
     );
     eventSource.onmessage = (event) => {
       const parsed = JSON.parse(event.data);
-      //const { data, user } = parsed?.data?.data?.data;
-      console.log("SSE data:", parsed);
-      setMessages((prev) => [
-        ...prev,
-        `(${parsed?.event}) ${parsed?.data?.data?.user?.username}이 ${parsed?.data?.data?.createdday}에 ${parsed?.data?.data?.content}을 작성`,
-      ]);
+      if (parsed?.event !== "ping") {
+        setMessages((prev) => [
+          ...prev,
+          `(${parsed?.event}) ${parsed?.data?.data?.user?.username}이 ${parsed?.data?.data?.createdday}에 ${parsed?.data?.data?.content}을 작성`,
+        ]);
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          `(${parsed?.event}) 서버가 연결을 유지하고 있습니다.`,
+        ]);
+      }
     };
     eventSource.onerror = (err) => {
       console.error("SSE error:", err);
       eventSource.close();
+      //401 또는 403 에러가 발생하면 리프레시
+      if (err instanceof Event && (err.target as any).readyState === 2) {
+        // readyState 2는 CLOSED 상태
+        console.error("SSE connection closed, attempting to reconnect...");
+        // 여기서 리프레시 로직을 추가할 수 있습니다.
+        if (session?.user?.username) {
+        }
+      }
     };
     return () => {
       eventSource.close();

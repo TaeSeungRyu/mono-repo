@@ -22,15 +22,18 @@ export enum API {
   USERUPDATE = `${proxy_pre_name}/user/update-info`,
   USERDELETE = `${proxy_pre_name}/user/delete`,
 
-  SSE = `${proxy_pre_name}/events/sse`,
+  //SSE = `${proxy_pre_name}/events/sse`,
 
   SCRAPPING = `${proxy_pre_name}/scrapping`,
   GITHUB = `${proxy_pre_name}/github`,
   KAFKA_ADD = `${proxy_pre_name}/kafka/add`,
 
   LOCAL_REFRESH = `${client_api_pre_name}/auth/refresh`,
+  LOCAL_SSE = `${client_api_pre_name}/sse`,
+
   DIRECT_SERVER_USER_AUTH_CODE = `/user/get-auth-code`,
   DIRECT_SERVER_MYINFO = "/user/my-info",
   DIRECT_SERVER_SIGNIN = "/auth/login",
   DIRECT_SERVER_REFRESH = "/auth/refresh-token",
+  DIRECT_SERVER_SSE = "/events/sse",
 }
