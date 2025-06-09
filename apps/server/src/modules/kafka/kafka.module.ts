@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule } from '@nestjs/microservices';
-
 import { KafkaTcpController } from './infrastructure/kafka.tcp.controller';
 import { KafkaService } from './application/kafka.service';
 import { KafkaController } from './infrastructure/kafka.controller';

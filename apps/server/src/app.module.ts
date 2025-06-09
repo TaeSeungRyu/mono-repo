@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 import { AppController } from './app.controller';
 
@@ -51,7 +53,18 @@ import { LogModule } from './logger/log.module';
         }),
       ],
     }),
-
+    ThrottlerModule.forRoot([
+      {
+        name: 'short',
+        ttl: 60, // 1분 동안
+        limit: 100, // 100 요청 제한
+      },
+      {
+        name: 'long',
+        ttl: 3600, // 1시간 동안
+        limit: 10000, // 10,000 요청 제한
+      },
+    ]),
     AuthModule,
     RedisProviderModule,
     BoardModule,
@@ -64,6 +77,12 @@ import { LogModule } from './logger/log.module';
     LogModule,
   ],
   controllers: [AppController],
-  providers: [RedisService],
+  providers: [
+    RedisService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}
