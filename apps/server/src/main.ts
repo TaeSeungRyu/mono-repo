@@ -7,9 +7,6 @@ import { winstonLoggerOptions } from './logger/winston-logger.option';
 import { WinstonModule } from 'nest-winston';
 import { AllExceptionsFilter } from './filters/all-exceptions.filter';
 
-import { JwtService } from '@nestjs/jwt';
-import { JwtAuthAdapter } from './chat/jwt-auth.adapter';
-
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, {
     logger: WinstonModule.createLogger(winstonLoggerOptions),
@@ -20,8 +17,6 @@ async function bootstrap(): Promise<void> {
     // Kafka 마이크로서비스 연결
     app.connectMicroservice<MicroserviceOptions>(KAFKA_OPTION);
     app.useGlobalFilters(new AllExceptionsFilter());
-    const jwtService = app.get(JwtService);
-    app.useWebSocketAdapter(new JwtAuthAdapter(jwtService));
   }
 
   await app.startAllMicroservices();

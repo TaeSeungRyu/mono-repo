@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
-
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
@@ -9,7 +8,6 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 import { AppController } from './app.controller';
-
 import { RedisProviderModule } from './redis/redis.module';
 import { RedisService } from './redis/redis.service';
 import { Board } from './modules/board/domain/board.entity';
@@ -26,7 +24,7 @@ import { ScrappingModule } from './modules/scrapping/scrapping.module';
 import { GithubModule } from './modules/github/github.module';
 import { KafkaModule } from './modules/kafka/kafka.module';
 import { LogModule } from './logger/log.module';
-import { ChatGateway } from './chat/chat.gateway';
+import { ChattingModule } from './modules/chatting/chatting.module';
 
 @Module({
   imports: [
@@ -76,6 +74,7 @@ import { ChatGateway } from './chat/chat.gateway';
     GithubModule,
     KafkaModule,
     LogModule,
+    ChattingModule,
   ],
   controllers: [AppController],
   providers: [
@@ -84,7 +83,6 @@ import { ChatGateway } from './chat/chat.gateway';
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
-    ChatGateway,
   ],
 })
 export class AppModule {}

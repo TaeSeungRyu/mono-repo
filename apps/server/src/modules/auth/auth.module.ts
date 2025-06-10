@@ -33,5 +33,6 @@ import { SseModule } from '../sse/sse.module';
     RefreshTokenUseCase,
     ValidateUserUseCase,
   ],
+  exports: [JwtModule],
 })
 export class AuthModule {}

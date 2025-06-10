@@ -32,10 +32,6 @@ const nextConfig: NextConfig = {
         source: "/api-server/:path*", //들어오는 요청 경로 패턴
         destination: `${process.env?.API_SERVER_URL}/:path*` || "", //라우팅하려는 경로
       },
-      {
-        source: "/ws-api-server/:path*", //들어오는 요청 경로 패턴
-        destination: `${process.env?.API_WEBSOCKET_SERVER_URL}/:path*` || "", //라우팅하려는 경로
-      },
     ];
   },
   output: "standalone",
