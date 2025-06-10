@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ServerOptions } from 'socket.io';
 import { Server } from 'socket.io';
 import { JwtPayload } from 'src/modules/auth/domain/jwt-payload.interface';
-import { AuthenticatedSocket } from 'src/types/socket-with-user.interface';
+import { AuthenticatedSocket } from './socket-with-user.interface';
 
 @Injectable()
 export class JwtAuthAdapter extends IoAdapter {
@@ -24,9 +24,10 @@ export class JwtAuthAdapter extends IoAdapter {
         const payload: JwtPayload = this.jwtService.verify(token);
         socket.user = payload; // 사용자를 소켓에 저장
         next();
-      } catch (err: any) {
-        console.error('JWT verification error:', err);
-        next(new Error('Invalid token'));
+      } catch (err) {
+        let message = 'Unknown Error';
+        if (err instanceof Error) message = err.message;
+        next(new Error(message));
       }
     });
 
