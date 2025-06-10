@@ -3,6 +3,7 @@ const path = require("path");
 const nextConfig: NextConfig = {
   env: {
     API_SERVER_URL: process.env.API_SERVER_URL,
+    API_WEBSOCKET_SERVER_URL: process.env.API_WEBSOCKET_SERVER_URL,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL, // https://next-auth.js.org/warnings#nextauth_url 이슈 반영 url 추가
   },
@@ -30,6 +31,10 @@ const nextConfig: NextConfig = {
       {
         source: "/api-server/:path*", //들어오는 요청 경로 패턴
         destination: `${process.env?.API_SERVER_URL}/:path*` || "", //라우팅하려는 경로
+      },
+      {
+        source: "/ws-api-server/:path*", //들어오는 요청 경로 패턴
+        destination: `${process.env?.API_WEBSOCKET_SERVER_URL}/:path*` || "", //라우팅하려는 경로
       },
     ];
   },

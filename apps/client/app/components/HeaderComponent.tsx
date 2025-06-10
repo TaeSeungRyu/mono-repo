@@ -98,6 +98,12 @@ const Header = ({ session }: HeaderProps) => {
             >
               kafka
             </Link>
+            <Link
+              href="/websocket"
+              className="text-gray-700 hover:text-blue-600 transition"
+            >
+              websocket
+            </Link>
             {isSuperUser && (
               <Link
                 href="/user"

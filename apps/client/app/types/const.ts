@@ -1,6 +1,9 @@
 //api server로 바로 요청을 보내는 경우
 export const proxy_pre_name = "/api-server";
 
+//api server로 바로 요청을 보내는 경우
+export const proxy_ws_pre_name = "/ws-api-server";
+
 //nextjs의 api route를 통해 요청을 보내는 경우
 export const client_api_pre_name = "/api";
 
@@ -22,11 +25,11 @@ export enum API {
   USERUPDATE = `${proxy_pre_name}/user/update-info`,
   USERDELETE = `${proxy_pre_name}/user/delete`,
 
-  //SSE = `${proxy_pre_name}/events/sse`,
-
   SCRAPPING = `${proxy_pre_name}/scrapping`,
   GITHUB = `${proxy_pre_name}/github`,
   KAFKA_ADD = `${proxy_pre_name}/kafka/add`,
+
+  WEBSOCKET = `${proxy_ws_pre_name}/websocket`,
 
   LOCAL_REFRESH = `${client_api_pre_name}/auth/refresh`,
   LOCAL_SSE = `${client_api_pre_name}/sse`,

@@ -14,6 +14,7 @@ import { AuthenticatedSocket } from './socket-with-user.interface';
   cors: {
     origin: '*', // 개발 중엔 허용
   },
+  namespace: 'websocket', // 네임스페이스 설정
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()

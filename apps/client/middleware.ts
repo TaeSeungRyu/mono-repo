@@ -46,7 +46,3 @@ export async function middleware(request: NextRequest) {
   }
   return response;
 }
-
-export const config = {
-  matcher: ["/api-server/:path*", "/sample", "/board"],
-};
