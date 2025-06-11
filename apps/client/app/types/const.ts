@@ -26,7 +26,7 @@ export const API = {
   GITHUB: `${proxy_pre_name}/github`,
   KAFKA_ADD: `${proxy_pre_name}/kafka/add`,
 
-  DIRECT_SERVER_WEBSOCKET: `${ws}/websocket`,
+  DIRECT_SERVER_WEBSOCKET: `${ws}`,
 
   LOCAL_REFRESH: `${client_api_pre_name}/auth/refresh`,
   LOCAL_SSE: `${client_api_pre_name}/sse`,
