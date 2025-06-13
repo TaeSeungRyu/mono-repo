@@ -10491,6 +10491,11 @@ std-env@^3.9.0:
   resolved "https://registry.yarnpkg.com/std-env/-/std-env-3.9.0.tgz#1a6f7243b339dca4c9fd55e1c7504c77ef23e8f1"
   integrity sha512-UGvjygr6F6tpH7o2qyqR6QYpwraIjKSdtzyBdyytFOHmPZY917kwdwLG0RbOjWOnKmnm3PeHjaoLLMie7kPLQw==
 
+storybook-addon-mantine@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/storybook-addon-mantine/-/storybook-addon-mantine-5.0.0.tgz#501c7b577556ec7d440bbb93978e5c64165a4338"
+  integrity sha512-RYTNCuSFoj4qY5nW0qRAGdYNIVjCWO7Hf/fyOAAQ+1lKdWqKEKcY0SHOC2SNzQfIXHLGZfYvTfxBltvUPDbUkA==
+
 storybook@9.0.8:
   version "9.0.8"
   resolved "https://registry.yarnpkg.com/storybook/-/storybook-9.0.8.tgz#c7c7f2f087ea455f18f8f158aba248577465177e"
