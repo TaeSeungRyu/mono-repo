@@ -12,6 +12,7 @@ import { RefreshTokenUseCase } from './application/use-cases/refresh-token.use-c
 import { ValidateUserUseCase } from './application/use-cases/validate-user.use-case';
 import { RedisProviderModule } from 'src/redis/redis.module';
 import { SseModule } from '../sse/sse.module';
+import { AuthMobileController } from './infrastructure/auth.mobile.controller';
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { SseModule } from '../sse/sse.module';
     RedisProviderModule,
     SseModule,
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, AuthMobileController],
   providers: [
     AuthService,
     JwtStrategy,

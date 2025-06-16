@@ -26,10 +26,12 @@ export class ValidateUserUseCase
     username,
     password,
     res,
+    expiresIn = '',
   }: {
     username: string;
     password: string;
     res: Response;
+    expiresIn?: string;
   }): Promise<ResponseDto> {
     const user = await this.userService.findUserByIdPassword(
       username,
@@ -73,7 +75,12 @@ export class ValidateUserUseCase
         );
       });
     }
-    const accessToken = this.jwtService.sign({ username, roles });
+    const signinData = { username, roles };
+    if (expiresIn !== '') {
+      signinData['expiresIn'] = expiresIn;
+    }
+    console.log('signinData', signinData);
+    const accessToken = this.jwtService.sign(signinData);
     const refreshToken = this.jwtService.sign(
       { username, roles },
       { expiresIn: '1d' },

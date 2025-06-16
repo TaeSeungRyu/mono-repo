@@ -27,11 +27,13 @@ export class AuthService {
     username: string,
     password: string,
     res: Response,
+    expiresIn = '',
   ): Promise<ResponseDto> {
     return this.validateUserUseCase.execute({
       username,
       password,
       res,
+      expiresIn,
     });
   }
 
